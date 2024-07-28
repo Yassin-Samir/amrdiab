@@ -7,9 +7,11 @@ function AudioPlayer() {
   useEffect(() => {
     if (!ref.current) return;
     ref.current.play();
-    const onplayCallback = (e: Event) => {
+    const onplayCallback = ({ currentTarget }: Event) => {
       setLoadingPercent(
-        (e.currentTarget?.currentTime / e.currentTarget?.duration) * 100
+        ((currentTarget as HTMLAudioElement)?.currentTime /
+          (currentTarget as HTMLAudioElement)?.duration) *
+          100
       );
     };
     ref.current.addEventListener("timeupdate", onplayCallback);
