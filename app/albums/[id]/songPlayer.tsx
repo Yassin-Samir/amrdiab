@@ -16,21 +16,21 @@ function SongPlayer({
   const sliderRef = useRef<HTMLDivElement>();
   const [Paused, setPaused] = useState(true);
   const [CurrentTime, setCurrentTime] = useState(0);
-  useEffect(() => {
-    if (!audioRef.current) return;
-    const timeUpdateCallBack = (e: Event) => {
-      setCurrentTime(e.target.currentTime);
-      e.target.currentTime === e.target.duration ? setPaused(true) : null;
-    };
-    audioRef.current.addEventListener("timeupdate", timeUpdateCallBack);
-  }, []);
   return (
     <div className="bg-[#0c0c0c] w-full py-3 px-2 md:px-5 mb-1">
       <h3 className="text-[#7b7a7a]">
         {name?.replace(/([A-Z])/g, " $1").trim()}
       </h3>
       <div className="flex w-full gap-2 justify-between items-center my-3">
-        <audio src={link} ref={audioRef} preload="metadata" />
+        <audio
+          onTimeUpdate={(e) => {
+            setCurrentTime(e.currentTarget.currentTime);
+            e.currentTarget.currentTime === e.currentTarget.duration ? setPaused(true) : null;
+          }}
+          src={link}
+          ref={audioRef}
+          preload="metadata"
+        />
         {Paused ? (
           <FaPlay
             onClick={() => {
