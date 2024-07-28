@@ -3,7 +3,7 @@ import React from "react";
 function LatestMusic() {
   return (
     <div>
-      <h1 className="text-center mx-auto font-extrabold text-5xl mb-10">
+      <h1 className="text-center text-white mx-auto font-extrabold text-5xl mb-10">
         Latest: Amr Diab's Music Video
       </h1>
       <span className="text-center mx-auto block text-base text-[#7b7a7a] mb-10">
