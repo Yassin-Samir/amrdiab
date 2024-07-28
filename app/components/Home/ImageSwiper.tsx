@@ -17,7 +17,7 @@ function ImageSwiper() {
   }, []);
   return (
     <>
-      <div className="relative w-full h-[100dvh]">
+      <div className="relative w-full h-[100vh]">
         {images &&
           images.map((ImgSrc) => (
             <Image

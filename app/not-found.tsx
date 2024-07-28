@@ -3,7 +3,7 @@ import React from "react";
 
 function notFound() {
   return (
-    <div className=" flex flex-col items-center justify-center    h-[59dvh] ">
+    <div className=" flex flex-col items-center justify-center    h-[59vh] ">
       <h1 className="text-6xl md:text-[200px] font-extrabold text-white">
         404
       </h1>
