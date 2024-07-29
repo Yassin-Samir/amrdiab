@@ -125,7 +125,6 @@ function SongPlayer({
               step={0.01}
               value={[Volume]}
               onValueChange={([value]) => {
-                alert(value);
                 audioRef.current.volume = value;
               }}
             />
