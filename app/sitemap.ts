@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { db } from "./firebase";
 import { Languages } from "next/dist/lib/metadata/types/alternative-urls-types";
 
-const baseUrl = "https://www.amrdiab.vercel.app/";
+const baseUrl = "https://amrdiab.vercel.app";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const albums = await db.collection("albums").get();
   return [
