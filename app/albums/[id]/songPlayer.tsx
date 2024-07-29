@@ -53,13 +53,20 @@ function SongPlayer({
             }
             setPaused(true);
             const songIndex = songs.current.findIndex((song) => song.id === id);
-            songs.current[
-              songIndex === songs.current.length - 1 ? 0 : songIndex + 1
-            ].ref.current.play();
+            const songDoc =
+              songs.current[
+                songIndex === songs.current.length - 1 ? 0 : songIndex + 1
+              ];
+            songDoc.ref.current.volume = 0;
+            songDoc.ref.current.play();
+            songDoc.ref.current.volume = 1;
           }}
           src={link}
           ref={audioRef}
-          preload="auto"
+          onPause={() => {
+            setPaused(true);
+          }}
+          preload="metadata"
           onVolumeChange={(e) => {
             setVolume(e.currentTarget.volume);
           }}
@@ -117,7 +124,7 @@ function SongPlayer({
             }}
           ></div>
         </div>
-        <p className="text-white text-sm  w-1/4 max-w-[60px] text-center ">
+        <p className="text-[#7b7a7a] text-sm  w-1/4 max-w-[60px] text-center ">
           {Math.floor(duration / 60) < 10
             ? "0" + Math.floor(duration / 60)
             : Math.floor(duration / 60)}
