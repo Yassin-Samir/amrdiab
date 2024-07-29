@@ -14,8 +14,8 @@ function SongPlayer({
 }) {
   const audioRef = useRef<HTMLAudioElement>();
   const sliderRef = useRef<HTMLDivElement>();
-  const [Paused, setPaused] = useState(true);
-  const [CurrentTime, setCurrentTime] = useState(0);
+  const [Paused, setPaused] = useState<boolean>(true);
+  const [CurrentTime, setCurrentTime] = useState<number>(0);
   return (
     <div className="bg-[#0c0c0c] w-full py-3 px-2 md:px-5 mb-1">
       <h3 className="text-[#7b7a7a]">
@@ -25,11 +25,13 @@ function SongPlayer({
         <audio
           onTimeUpdate={(e) => {
             setCurrentTime(e.currentTarget.currentTime);
-            e.currentTarget.currentTime === e.currentTarget.duration ? setPaused(true) : null;
+            e.currentTarget.currentTime === e.currentTarget.duration
+              ? setPaused(true)
+              : null;
           }}
           src={link}
           ref={audioRef}
-          preload="metadata"
+          preload="auto"
         />
         {Paused ? (
           <FaPlay
@@ -52,7 +54,6 @@ function SongPlayer({
             className="cursor-pointer"
           />
         )}
-
         <p className="text-white text-sm">
           {" "}
           {Math.floor(CurrentTime / 60) < 10
