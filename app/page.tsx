@@ -9,13 +9,15 @@ import LatestMusic from "./components/Home/LatestMusic";
 
 export const metadata: Metadata = {
   title: "Amr Diab Hadaba",
+  other: {
+    "google-site-verification": "rYxsKkyoFvlrgH8dpWqr35UfGc3kt05nDeD4Ga9fjDw",
+  },
 };
 export default function Home() {
   return (
     <>
       <ImageSwiper />
       <main className="max-w-[1200px] mx-auto">
-       
         <SoundPlayer poster={taamaPoster} background={taamaBackground} />
         <LatestNews />
         <LatestMusic />
