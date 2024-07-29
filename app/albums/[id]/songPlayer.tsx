@@ -1,9 +1,15 @@
 "use client";
 import { Slider } from "@/shadcn-components/ui/slider";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useLayoutEffect,
+  useRef,
+  useState,
+  useEffect,
+} from "react";
 import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa";
 import { AiFillSound } from "react-icons/ai";
+import { getOS } from "@/app/utils";
 
 function SongPlayer({
   name,
@@ -19,6 +25,14 @@ function SongPlayer({
   const [Paused, setPaused] = useState<boolean>(true);
   const [Volume, setVolume] = useState(0.5);
   const [CurrentTime, setCurrentTime] = useState<number>(0);
+  const [IsIos, setIsIos] = useState(false);
+  useLayoutEffect(() => {
+    const os = getOS();
+    if (os === "Mac" || os === "iOS") {
+      setIsIos(true);
+      return;
+    }
+  }, []);
   useEffect(() => {
     setVolume(audioRef.current.volume);
   }, []);
@@ -38,7 +52,9 @@ function SongPlayer({
           src={link}
           ref={audioRef}
           preload="auto"
-          onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
+          onVolumeChange={(e) => {
+            setVolume(e.currentTarget.volume);
+          }}
         />
         {Paused ? (
           <FaPlay
@@ -98,18 +114,23 @@ function SongPlayer({
             ? "0" + Math.floor(duration % 60)
             : Math.floor(duration % 60)}
         </p>
-        <AiFillSound size={20} fill="#fff" />
-        <Slider
-          max={1}
-          min={0}
-          defaultValue={[0.3]}
-          className="h-2 w-2/6 max-w-[150px]"
-          step={0.01}
-          value={[Volume]}
-          onValueChange={([value]) => {
-            audioRef.current.volume = value;
-          }}
-        />
+        {!IsIos ? (
+          <>
+            <AiFillSound size={20} fill="#fff" />
+            <Slider
+              max={1}
+              min={0}
+              defaultValue={[0.3]}
+              className="h-2 w-2/6 max-w-[150px] select-none"
+              step={0.01}
+              value={[Volume]}
+              onValueChange={([value]) => {
+                alert(value);
+                audioRef.current.volume = value;
+              }}
+            />
+          </>
+        ) : null}
       </div>
     </div>
   );
