@@ -48,7 +48,7 @@ async function page({ params: { id } }: { params: { id: string } }) {
             alt={albumData.title}
             width={100}
             height={100}
-            className="w-full h-full max-w-[400px] max-h-[400px] object-contain"
+            className="w-full h-full md:max-w-[400px] md:max-h-[400px] object-contain"
           />
           <div className="flex items-center mt-3">
             <svg
