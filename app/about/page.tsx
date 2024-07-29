@@ -93,7 +93,7 @@ function page() {
         <img
           width={960}
           height={310}
-          className="mt-5 object-contain"
+          className="mx-auto mt-5 object-contain"
           alt="Amr Diab during WMA ceremony"
           title="Amr Diab during WMA ceremony"
           srcSet="https://amrdiab.net/wp-content/uploads/2019/04/bio2.jpg 960w, https://amrdiab.net/wp-content/uploads/2019/04/bio2-300x97.jpg 300w, https://amrdiab.net/wp-content/uploads/2019/04/bio2-768x248.jpg 768w"
@@ -109,7 +109,7 @@ function page() {
         <img
           width="960"
           height="310"
-          className="mt-5 object-contain"
+          className="mx-auto mt-5 object-contain"
           src="https://amrdiab.net/wp-content/uploads/2019/06/bio4.jpg"
           alt="Amr Diab, Lily Nahary"
           title="Amr Diab, Lily Nahary"
@@ -256,6 +256,7 @@ function page() {
           decoding="async"
           width="960"
           height="310"
+          className="mx-auto"
           src="https://amrdiab.net/wp-content/uploads/2019/04/bio1.jpg"
           alt="Amr Diab Biography"
           title="Amr Diab Biography"
@@ -284,7 +285,8 @@ function page() {
           loading="lazy"
           decoding="async"
           width="960"
-          height="310"
+          height="310" 
+          className="mx-auto"
           src="https://amrdiab.net/wp-content/uploads/2019/06/bio6.jpg"
           alt="Amr Diab, Vodafone Ramadan Campaign"
           title="Amr Diab, Vodafone Ramadan Campaign"
@@ -311,6 +313,7 @@ function page() {
           decoding="async"
           width="960"
           height="516"
+          className="mx-auto"
           src="https://amrdiab.net/wp-content/uploads/2019/11/Bio8.jpg"
           alt="Amr Diab, Times Square - Spotify Campaign"
           title="Amr Diab, Times Square - Spotify Campaign"
