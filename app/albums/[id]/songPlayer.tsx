@@ -1,24 +1,22 @@
 "use client";
 import { Slider } from "@/shadcn-components/ui/slider";
-import React, {
-  useLayoutEffect,
-  useRef,
-  useState,
-  useEffect,
-} from "react";
+import React, { useLayoutEffect, useRef, useState, useEffect } from "react";
 import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa";
 import { AiFillSound } from "react-icons/ai";
 import { getOS } from "@/app/utils";
+import { useSongs } from "./SongContext";
 
 function SongPlayer({
   name,
   link,
   duration,
+  id,
 }: {
   name: string;
   link: string;
   duration: number;
+  id: string;
 }) {
   const audioRef = useRef<HTMLAudioElement>();
   const sliderRef = useRef<HTMLDivElement>();
@@ -26,6 +24,7 @@ function SongPlayer({
   const [Volume, setVolume] = useState(0.5);
   const [CurrentTime, setCurrentTime] = useState<number>(0);
   const [IsIos, setIsIos] = useState(false);
+  const { songs } = useSongs();
   useLayoutEffect(() => {
     const os = getOS();
     if (os === "Mac" || os === "iOS") {
@@ -34,20 +33,29 @@ function SongPlayer({
     }
   }, []);
   useEffect(() => {
+    songs.current.push({ id, ref: audioRef });
     setVolume(audioRef.current.volume);
   }, []);
   return (
     <div className="bg-[#0c0c0c] w-full py-3 px-2 md:px-5 mb-1">
-      <h3 className="text-[#7b7a7a]">
+      <h3
+        className={`text-[#7b7a7a] ${!Paused ? "!text-white font-medium" : ""}`}
+      >
         {name?.replace(/([A-Z])/g, " $1").trim()}
       </h3>
       <div className="flex w-full gap-2 justify-between items-center my-3">
         <audio
           onTimeUpdate={(e) => {
             setCurrentTime(e.currentTarget.currentTime);
-            e.currentTarget.currentTime === e.currentTarget.duration
-              ? setPaused(true)
-              : null;
+            if (e.currentTarget.currentTime !== e.currentTarget.duration) {
+              setPaused(audioRef.current.paused);
+              return;
+            }
+            setPaused(true);
+            const songIndex = songs.current.findIndex((song) => song.id === id);
+            songs.current[
+              songIndex === songs.current.length - 1 ? 0 : songIndex + 1
+            ].ref.current.play();
           }}
           src={link}
           ref={audioRef}
@@ -59,6 +67,10 @@ function SongPlayer({
         {Paused ? (
           <FaPlay
             onClick={() => {
+              songs.current.map((song) => {
+                if (song.id === id) return;
+                !song.ref.current.paused && song.ref.current.pause();
+              });
               audioRef.current?.play();
               setPaused((prev) => !prev);
             }}

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import SongPlayer from "./songPlayer";
 import { Metadata } from "next";
+import { SongProvider } from "./SongContext";
 export async function generateMetadata({
   params: { id },
 }: {
@@ -82,10 +83,12 @@ async function page({ params: { id } }: { params: { id: string } }) {
           </p>
         </div>
         <div className="md:1/2 h-full grow">
-          {albumsSongs &&
-            albumsSongs.map((songData) => (
-              <SongPlayer {...songData} key={songData.id} />
-            ))}
+          <SongProvider>
+            {albumsSongs &&
+              albumsSongs.map((songData) => (
+                <SongPlayer {...songData} key={songData.id} />
+              ))}
+          </SongProvider>
         </div>
       </div>
     </main>
