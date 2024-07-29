@@ -51,9 +51,12 @@ function Album({
   id?: string;
 }) {
   return (
-    <Link href={`/albums/${id}`} className="group py-3 px-2 overflow-hidden">
+    <Link
+      href={`/albums/${id}`}
+      className="group py-3 px-2 overflow-hidden h-fit"
+    >
       <Image
-        className={"object-cover select-none w-[250px] h-[250px] "}
+        className={"object-contain select-none w-full h-full "}
         src={poster}
         alt={title}
         width={200}
