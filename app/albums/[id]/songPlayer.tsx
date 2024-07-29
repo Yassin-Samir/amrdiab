@@ -69,7 +69,7 @@ function SongPlayer({
             onClick={() => {
               songs.current.map((song) => {
                 if (song.id === id) return;
-                !song.ref.current.paused && song.ref.current.pause();
+                song.ref.current.pause();
               });
               audioRef.current?.play();
               setPaused((prev) => !prev);
