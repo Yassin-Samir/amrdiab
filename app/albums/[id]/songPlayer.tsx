@@ -103,7 +103,7 @@ function SongPlayer({
           max={1}
           min={0}
           defaultValue={[0.3]}
-          className="h-2.5 w-1/4 max-w-[150px]  bg-white"
+          className="h-2 w-2/6 max-w-[150px]"
           step={0.01}
           value={[Volume]}
           onValueChange={([value]) => {
