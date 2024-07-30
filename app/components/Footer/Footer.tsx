@@ -22,8 +22,18 @@ function Footer() {
         quality={100}
         className="w-[86px] h-[100px] object-contain"
       />
-      <p className="text-sm mt-[20px] text-inherit">
+      <p className="text-sm mt-5 text-inherit">
         Copyrights Reserved, Nay for Media 2000-{new Date().getFullYear()}
+      </p>
+      <p className="text-base mt-2.5  text-inherit">
+        Made by{" "}
+        <a
+          target="_blank"
+          className="font-bold"
+          href={"https://www.instagram.com/__yassinsamir__"}
+        >
+          Yassin Hegazy
+        </a>
       </p>
     </footer>
   );
