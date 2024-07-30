@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 };
 function page() {
   return (
-    <main className="mx-auto mt-[140px] mb-5 max-w-[1200px] font-medium text-[#7b7a7a]">
+    <main className="mx-auto mt-[140px] mb-5 max-w-[1200px] text-[#7b7a7a]">
       <div className="w-[95%] mx-auto flex flex-col gap-5">
         <div className="flex justify-between w-full flex-wrap md:flex-nowrap gap-5 mb-4">
           <Image
@@ -285,7 +285,7 @@ function page() {
           loading="lazy"
           decoding="async"
           width="960"
-          height="310" 
+          height="310"
           className="mx-auto"
           src="https://amrdiab.net/wp-content/uploads/2019/06/bio6.jpg"
           alt="Amr Diab, Vodafone Ramadan Campaign"
