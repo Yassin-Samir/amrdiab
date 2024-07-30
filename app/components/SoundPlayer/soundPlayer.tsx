@@ -5,6 +5,7 @@ import { Ref, useRef } from "react";
 import SoundProvider from "./soundContext";
 import useSoundContext from "./useSoundContext";
 import AudioPlayer from "./audioPlayer";
+import Link from "next/link";
 const latestSingles = [
   {
     src: "https://amrdiab.net/wp-content/uploads/2024/03/Tetehabi.mp3",
@@ -64,9 +65,8 @@ function SoundPlayer({
           <div className="flex justify-between px-5 items-center h-[150px] text-white">
             <h1 className="text-[2rem] font-bold">Latest Singles</h1>
 
-            <a
-              href="https://www.youtube.com/amrdiab"
-              target="_blank"
+            <Link
+              href="/albums"
               className="
             py-4 px-5 rounded-md 
             border-2  
@@ -80,7 +80,7 @@ function SoundPlayer({
             text-center"
             >
               LISTEN TO FULL TRACKS
-            </a>
+            </Link>
           </div>
           <ul>
             {latestSingles &&
