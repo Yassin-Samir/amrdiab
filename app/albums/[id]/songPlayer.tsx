@@ -12,10 +12,14 @@ function SongPlayer({
   link,
   duration,
   id,
+  poster,
+  albumName,
 }: {
+  duration: number;
+  albumName: string;
+  poster: string;
   name: string;
   link: string;
-  duration: number;
   id: string;
 }) {
   const audioRef = useRef<HTMLAudioElement>();
@@ -25,6 +29,21 @@ function SongPlayer({
   const [CurrentTime, setCurrentTime] = useState<number>(0);
   const [IsIos, setIsIos] = useState(false);
   const { songs } = useSongs();
+  useEffect(() => {
+    if (Paused) return;
+    if (!("mediaSession" in window.navigator)) return;
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: name.replace(/^\s+/g, ""),
+      artist: "Amr diab",
+      album: albumName,
+      artwork: [
+        {
+          src: poster,
+          type: "image/jpg",
+        },
+      ],
+    });
+  }, [Paused]);
   useLayoutEffect(() => {
     const os = getOS();
     if (os === "Mac" || os === "iOS") {

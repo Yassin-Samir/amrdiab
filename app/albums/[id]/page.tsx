@@ -86,7 +86,12 @@ async function page({ params: { id } }: { params: { id: string } }) {
           <SongProvider>
             {albumsSongs &&
               albumsSongs.map((songData) => (
-                <SongPlayer {...songData} key={songData.id} />
+                <SongPlayer
+                  albumName={albumData.title}
+                  poster={albumData.poster}
+                  {...songData}
+                  key={songData.id}
+                />
               ))}
           </SongProvider>
         </div>
