@@ -57,6 +57,10 @@ function SongPlayer({
               songs.current[
                 songIndex === songs.current.length - 1 ? 0 : songIndex + 1
               ];
+            if (!IsIos) {
+              songDoc.ref.current.play();
+              return;
+            }
             songDoc.ref.current.volume = 0;
             songDoc.ref.current.play();
             songDoc.ref.current.volume = 1;
