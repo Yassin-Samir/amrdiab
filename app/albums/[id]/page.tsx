@@ -82,7 +82,7 @@ async function page({ params: { id } }: { params: { id: string } }) {
             {albumCollection.size}
           </p>
         </div>
-        <div className="md:1/2 h-full grow">
+        <div className="max-[968px]:w-3/4 h-full grow">
           <SongProvider>
             {albumsSongs &&
               albumsSongs.map((songData) => (
