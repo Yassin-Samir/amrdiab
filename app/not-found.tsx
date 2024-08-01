@@ -17,7 +17,7 @@ function notFound() {
           text-white uppercase mt-3 
           transition ease-linear duration-200 
           text-xs
-         hover:text-[#bf987c]"
+         hover:text-main"
       >
         Please return to homepage
       </Link>

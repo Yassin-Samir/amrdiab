@@ -42,7 +42,7 @@ function AudioPlayer() {
       >
         <div
           style={{ width: `${loadingPercent}%` }}
-          className="h-1 absolute top-0 left-0 bg-[#bf987c]"
+          className="h-1 absolute top-0 left-0 bg-main"
         ></div>
       </div>
       {/* audio player */}

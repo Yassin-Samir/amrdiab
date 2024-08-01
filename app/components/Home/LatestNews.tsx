@@ -41,15 +41,17 @@ function LatestNews() {
         href="/news"
         className="
         text-end ml-auto 
-        text-[#bf987c] 
+        text-main 
         cursor-pointer block"
       >
         View all news
       </Link>
       <hr className="mt-10" />
-      <div className="grid  my-10 mx-auto 
+      <div
+        className="grid  my-10 mx-auto 
       justify-center min-[1090px]:justify-between 
-      grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-10">
+      grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-10"
+      >
         {news &&
           news.map((newsData) => <News {...newsData} key={newsData.date} />)}
       </div>
@@ -78,13 +80,13 @@ function News({
         className="size-full object-contain"
       />
       <p className="text-sm text-[#7b7a7a] mt-5 mb-3">{date}</p>
-      <p className="text-xl  text-white font-bold transition-[color] duration-100 ease-in group-hover:text-[#bf987c]">
+      <p className="text-xl  text-white font-bold transition-[color] duration-100 ease-in group-hover:text-main">
         {title}
       </p>
       <p className="text-sm text-[#7b7a7a]  text-ellipsis w-full mt-2 mb-2">
         {description}
       </p>
-      <span className="mt-5 transition-[color] duration-100 ease-in group-hover:text-[#bf987c]  text-white text-base">
+      <span className="mt-5 transition-[color] duration-100 ease-in group-hover:text-main  text-white text-base">
         Read More
       </span>
     </Link>

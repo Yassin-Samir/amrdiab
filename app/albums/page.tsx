@@ -62,7 +62,7 @@ function Album({
         width={200}
         height={200}
       />
-      <h1 className="text-lg transition-colors duration-200 ease-out group-hover:text-[#bf987c]  mt-2.5 text-white">
+      <h1 className="text-lg transition-colors duration-200 ease-out group-hover:text-main  mt-2.5 text-white">
         {title}
       </h1>
       <span className="block mt-1 text-base text-[#7b7a7a]">{year}</span>

@@ -71,11 +71,11 @@ function SoundPlayer({
             py-4 px-5 rounded-md 
             border-2  
             border-solid  
-            border-[#bf987c]
+            border-main
             transition-[background-color]
             duration-200 
             ease-linear
-            bg-[#bf987c] hover:bg-transparent 
+            bg-main hover:bg-transparent 
             uppercase
             text-center"
             >
