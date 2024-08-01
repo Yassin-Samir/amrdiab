@@ -37,7 +37,7 @@ function nav() {
               <Link
                 href={"/"}
                 className={
-                  "text-white  text-[14px] font-bold text-center uppercase"
+                  "text-white text-[14px] font-bold text-center uppercase hover:text-main transition-colors duration-150 ease-in "
                 }
               >
                 {" "}
@@ -48,7 +48,7 @@ function nav() {
               <Link
                 href={"/about"}
                 className={
-                  "text-white  text-[14px] font-bold text-center uppercase"
+                  "text-white text-[14px] font-bold text-center uppercase hover:text-main transition-colors duration-150 ease-in "
                 }
               >
                 {" "}
@@ -59,7 +59,7 @@ function nav() {
               <Link
                 href={"/albums"}
                 className={
-                  "text-white text-[14px] font-bold text-center uppercase"
+                  "text-white text-[14px] font-bold text-center uppercase hover:text-main transition-colors duration-150 ease-in "
                 }
               >
                 {" "}
