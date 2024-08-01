@@ -3,20 +3,27 @@ import useSoundContext from "./useSoundContext";
 
 function AudioPlayer() {
   const { headline, ref } = useSoundContext();
-  const [loadingPercent, setLoadingPercent] = useState(0);
+  const [loadingPercent, setLoadingPercent] = useState<number>(0);
+  const [Paused, setPaused] = useState<boolean>(false);
   useEffect(() => {
     if (!ref.current) return;
     ref.current.play();
-    const onplayCallback = ({ currentTarget }: Event) => {
+    const onTimeUpdateCallback = ({ currentTarget }: Event) => {
       setLoadingPercent(
         ((currentTarget as HTMLAudioElement)?.currentTime /
           (currentTarget as HTMLAudioElement)?.duration) *
           100
       );
     };
-    ref.current.addEventListener("timeupdate", onplayCallback);
+    const onPlay = () => setPaused(false);
+    const onPause = () => setPaused(true);
+    ref.current.addEventListener("timeupdate", onTimeUpdateCallback);
+    ref.current.addEventListener("play", onPlay);
+    ref.current.addEventListener("pause", onPause);
     return () => {
-      ref.current.removeEventListener("timeupdate", onplayCallback);
+      ref.current.removeEventListener("play", onPlay);
+      ref.current.removeEventListener("pause", onPause);
+      ref.current.removeEventListener("timeupdate", onTimeUpdateCallback);
     };
   }, [headline]);
   if (!headline || !ref.current) return null;
@@ -47,12 +54,13 @@ function AudioPlayer() {
         </div>
         {/* media playback buttons */}
         <div className="h-min">
-          {!ref.current.paused ? (
+          {!Paused ? (
             <svg
               className="size-10 cursor-pointer"
               xmlns="http://www.w3.org/2000/svg"
               onClick={() => {
                 ref.current.pause();
+                setPaused(true);
               }}
               viewBox="0 0 320 512"
             >
@@ -68,6 +76,7 @@ function AudioPlayer() {
               viewBox="0 0 384 512"
               onClick={() => {
                 ref.current.play();
+                setPaused(false);
               }}
             >
               <path
