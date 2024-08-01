@@ -4,8 +4,15 @@ import React, { useLayoutEffect, useRef, useState, useEffect } from "react";
 import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa";
 import { AiFillSound } from "react-icons/ai";
+import { ImLoop2 } from "react-icons/im";
 import { getOS } from "@/app/utils";
 import { useSongs } from "./SongContext";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/shadcn-components/ui/tooltip";
 
 function SongPlayer({
   name,
@@ -28,10 +35,11 @@ function SongPlayer({
   const [Volume, setVolume] = useState(0.5);
   const [CurrentTime, setCurrentTime] = useState<number>(0);
   const [IsIos, setIsIos] = useState(false);
+  const [Loop, setLoop] = useState(false);
   const { songs } = useSongs();
   useEffect(() => {
-    if (Paused) return;
     if (!("mediaSession" in window.navigator)) return;
+    if (Paused) return;
     navigator.mediaSession.metadata = new MediaMetadata({
       title: name.replace(/^\s+/g, ""),
       artist: "Amr diab",
@@ -72,10 +80,11 @@ function SongPlayer({
             }
             setPaused(true);
             const songIndex = songs.current.findIndex((song) => song.id === id);
-            const songDoc =
-              songs.current[
-                songIndex === songs.current.length - 1 ? 0 : songIndex + 1
-              ];
+            const songDoc = Loop
+              ? songs.current[songIndex]
+              : songs.current[
+                  songIndex === songs.current.length - 1 ? 0 : songIndex + 1
+                ];
             if (!IsIos) {
               songDoc.ref.current.play();
               return;
@@ -147,6 +156,20 @@ function SongPlayer({
             }}
           ></div>
         </div>
+        <TooltipProvider delayDuration={500}>
+          <Tooltip>
+            <TooltipContent side="top" sideOffset={7.5}>
+              Loop
+            </TooltipContent>
+            <TooltipTrigger className="ml-0.5">
+              <ImLoop2
+                onClick={() => setLoop((prev) => !prev)}
+                size={15}
+                className={`${Loop ? "fill-blue-600" : "fill-white"}`}
+              />
+            </TooltipTrigger>
+          </Tooltip>
+        </TooltipProvider>
         <p className="text-[#7b7a7a] text-sm  w-1/4 max-w-[60px] text-center ">
           {Math.floor(duration / 60) < 10
             ? "0" + Math.floor(duration / 60)
