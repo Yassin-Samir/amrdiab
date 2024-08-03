@@ -7,7 +7,7 @@ function LatestReleases() {
         <h1 className="text-3xl  text-white font-extrabold">
           Discover Amr Diab newest albums & singles.
         </h1>
-        <p className="text-base mt-5 text-[#7b7a7a]">
+        <p className="text-base mt-5 text-greyShade">
           Amr Diab’s hard work and passion to creating quality music and new
           stylized musical techniques was his ultimate aim throughout the years.
           Browse through his discography to find out your favorite music hits

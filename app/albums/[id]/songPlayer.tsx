@@ -66,7 +66,7 @@ function SongPlayer({
   return (
     <div className="bg-[#0c0c0c] w-full py-3 px-2 md:px-5 mb-1">
       <h3
-        className={`text-[#7b7a7a] ${!Paused ? "!text-white font-medium" : ""}`}
+        className={`text-greyShade ${!Paused ? "!text-white font-medium" : ""}`}
       >
         {name?.replace(/([A-Z])/g, " $1").trim()}
       </h3>
@@ -170,7 +170,7 @@ function SongPlayer({
             </TooltipTrigger>
           </Tooltip>
         </TooltipProvider>
-        <p className="text-[#7b7a7a] text-sm  w-1/4 max-w-[60px] text-center ">
+        <p className="text-greyShade text-sm  w-1/4 max-w-[60px] text-center ">
           {Math.floor(duration / 60) < 10
             ? "0" + Math.floor(duration / 60)
             : Math.floor(duration / 60)}

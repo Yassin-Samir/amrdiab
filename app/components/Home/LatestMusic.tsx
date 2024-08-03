@@ -6,7 +6,7 @@ function LatestMusic() {
       <h1 className="text-center text-white mx-auto font-extrabold text-5xl mb-10">
         Latest: Amr Diab's Music Video
       </h1>
-      <span className="text-center mx-auto block text-base text-[#7b7a7a] mb-10">
+      <span className="text-center mx-auto block text-base text-greyShade mb-10">
         Amr Diab – El Kelma El Helwa with Vodafone
       </span>
       <iframe

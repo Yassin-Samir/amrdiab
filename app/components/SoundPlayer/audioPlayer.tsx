@@ -31,7 +31,7 @@ function AudioPlayer() {
     <div className="w-full h-[75px] absolute bottom-0">
       {/* loading slider */}
       <div
-        className="w-full  h-1 relative bg-[#7b7a7a] cursor-pointer"
+        className="w-full  h-1 relative bg-greyShade cursor-pointer"
         onClick={(e) => {
           const clickX =
             e.clientX -
@@ -49,7 +49,7 @@ function AudioPlayer() {
       <div className="mt-2 w-[90%] items-center mx-auto h-[63px] flex justify-between">
         {/* name of the song */}
         <div>
-          <span className="text-sm text-[#7b7a7a] uppercase">PLAYING</span>
+          <span className="text-sm text-greyShade uppercase">PLAYING</span>
           <p className="text-lg text-white font-bold">{headline}</p>
         </div>
         {/* media playback buttons */}
@@ -94,8 +94,8 @@ function AudioPlayer() {
               ? "0" + Math.floor((loadingPercent / 100) * 30)
               : Math.floor((loadingPercent / 100) * 30)}
           </span>{" "}
-          <span className="text-[#7b7a7a]">/</span>{" "}
-          <span className="text-[#7b7a7a]">0:30</span>
+          <span className="text-greyShade">/</span>{" "}
+          <span className="text-greyShade">0:30</span>
         </div>
       </div>
     </div>

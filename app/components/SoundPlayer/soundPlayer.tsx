@@ -36,7 +36,7 @@ function SoundPlayer({
       <h1 className="text-5xl font-extrabold  text-white text-center mt-[200px] mx-auto ">
         Listen to Amr Diab
       </h1>
-      <span className="text-[#7b7a7a] text-base block mt-5 text-center mx-auto">
+      <span className="text-greyShade text-base block mt-5 text-center mx-auto">
         2024
       </span>
       <div
@@ -119,11 +119,11 @@ function TrackListItem({ headline, src }: { headline: string; src: string }) {
         <span
           className={`text-xl font-medium ${
             soundContext.headline === headline ? "!text-white" : ""
-          } text-[#7b7a7a] ml-5`}
+          } text-greyShade ml-5`}
         >
           {headline}
         </span>
-        <span className="ml-auto  text-[#7b7a7a]">0:30</span>
+        <span className="ml-auto  text-greyShade">0:30</span>
       </li>{" "}
     </>
   );

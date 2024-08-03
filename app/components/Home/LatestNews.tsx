@@ -33,7 +33,7 @@ function LatestNews() {
       <h1 className="text-5xl text-start  font-extrabold text-white mb-3">
         Latest News
       </h1>
-      <p className="text-base text-[#7b7a7a]">
+      <p className="text-base text-greyShade">
         Find the latest news of Amr Diab
       </p>
       <Link
@@ -79,11 +79,11 @@ function News({
         quality={100}
         className="size-full object-contain"
       />
-      <p className="text-sm text-[#7b7a7a] mt-5 mb-3">{date}</p>
+      <p className="text-sm text-greyShade mt-5 mb-3">{date}</p>
       <p className="text-xl  text-white font-bold transition-[color] duration-100 ease-in group-hover:text-main">
         {title}
       </p>
-      <p className="text-sm text-[#7b7a7a]  text-ellipsis w-full mt-2 mb-2">
+      <p className="text-sm text-greyShade  text-ellipsis w-full mt-2 mb-2">
         {description}
       </p>
       <span className="mt-5 transition-[color] duration-100 ease-in group-hover:text-main  text-white text-base">
