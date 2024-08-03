@@ -24,8 +24,11 @@ async function page({ params: { id } }: { params: { id: string } }) {
   const albumDoc = await db.collection("albums").doc(id).get();
   if (!albumDoc.exists) notFound();
   const albumData = albumDoc.data();
-  const albumCollection = await db.collection(`albums/${id}/songs`).get();
-  const albumsSongs = albumCollection.docs.map((song): song => {
+  const songsQuery = await db
+    .collection("songs")
+    .where("albumId", "==", id)
+    .get();
+  const albumsSongs = songsQuery.docs.map((song): song => {
     const songData = song.data();
     return {
       id: song.id,
@@ -79,7 +82,7 @@ async function page({ params: { id } }: { params: { id: string } }) {
             <span className="tracking-[1px] uppercase text-sm">
               Number of discs :{" "}
             </span>
-            {albumCollection.size}
+            {songsQuery.size}
           </p>
         </div>
         <div className="max-[968px]:w-3/4 h-full grow">
