@@ -25,7 +25,7 @@ const Slider = React.forwardRef<
     size-2.5 rounded-full border-2 border-transparent 
     bg-neutral-300 ring-offset-neutral-300 transition-colors 
     ring-2 ring-offset-2 outline-none ring-neutral-300
-    data-[disabled]:pointer-events-none data-[disabled]:opacity-50 
+    data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 
     dark:border-neutral-50 dark:bg-neutral-950 
     dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-300"
     />

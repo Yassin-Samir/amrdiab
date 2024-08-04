@@ -64,7 +64,7 @@ function SongPlayer({
     setVolume(audioRef.current.volume);
   }, []);
   return (
-    <div className="bg-[#0c0c0c] w-full py-3 px-2 md:px-5 mb-1">
+    <div className="bg-[#0c0c0c] w-full py-3 px-2 md:px-5 mb-1" id={id}>
       <h3
         className={`text-greyShade ${!Paused ? "!text-white font-medium" : ""}`}
       >
@@ -72,7 +72,7 @@ function SongPlayer({
       </h3>
       <div className="flex w-full gap-2 justify-between items-center my-3">
         <audio
-          onTimeUpdate={(e) => {
+          onTimeUpdate={async (e) => {
             setCurrentTime(e.currentTarget.currentTime);
             if (e.currentTarget.currentTime !== e.currentTarget.duration) {
               setPaused(audioRef.current.paused);
@@ -90,7 +90,7 @@ function SongPlayer({
               return;
             }
             songDoc.ref.current.volume = 0;
-            songDoc.ref.current.play();
+            await songDoc.ref.current.play();
             songDoc.ref.current.volume = 1;
           }}
           src={link}
@@ -105,12 +105,12 @@ function SongPlayer({
         />
         {Paused ? (
           <FaPlay
-            onClick={() => {
+            onClick={async () => {
               songs.current.map((song) => {
                 if (song.id === id) return;
                 song.ref.current.pause();
               });
-              audioRef.current?.play();
+              await audioRef.current?.play();
               setPaused((prev) => !prev);
             }}
             fill="white"
