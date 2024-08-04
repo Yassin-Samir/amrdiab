@@ -2,6 +2,8 @@ import Image, { StaticImageData } from "next/image";
 import { db } from "@/app/firebase";
 import Link from "next/link";
 import { Metadata } from "next";
+import SearchBar from "./autoComplete";
+import SearchContext from "./SearchBox";
 export const metadata: Metadata = {
   title: "Amr Diab Albums",
 };
@@ -13,6 +15,9 @@ async function page() {
   return (
     <main className="max-w-[1600px] mx-auto mt-[140px] mb-20">
       <div className="w-[95%] mx-auto">
+        <SearchContext>
+          <SearchBar />
+        </SearchContext>
         <h1 className="text-4xl text-white font-extrabold ">
           Amr Diab's Albums
         </h1>
