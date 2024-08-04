@@ -2,10 +2,13 @@ import Image, { StaticImageData } from "next/image";
 import { db } from "@/app/firebase";
 import Link from "next/link";
 import { Metadata } from "next";
-import SearchBar from "./autoComplete";
-import SearchContext from "./SearchBox";
 export const metadata: Metadata = {
   title: "Amr Diab Albums",
+};
+export type album = {
+  title: string;
+  poster: string;
+  year: string;
 };
 async function page() {
   const albums = await db
