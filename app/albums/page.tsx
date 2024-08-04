@@ -7,16 +7,32 @@ import SearchContext from "./SearchBox";
 export const metadata: Metadata = {
   title: "Amr Diab Albums",
 };
+export type album = {
+  title: string;
+  poster: string;
+  year: string;
+};
 async function page() {
   const albums = await db
     .collection("albums")
     .orderBy("createdAt", "desc")
     .get();
+  const albumsMap: {
+    [key: string]: album;
+  } = {};
+  albums.docs.map((songDoc) => {
+    const albumData = songDoc.data() as album;
+    albumsMap[songDoc.id] = {
+      title: albumData.title,
+      poster: albumData.poster,
+      year: albumData.year,
+    };
+  });
   return (
     <main className="max-w-[1600px] mx-auto mt-[140px] mb-20">
       <div className="w-[95%] mx-auto">
         <SearchContext>
-          <SearchBar />
+          <SearchBar albumsMap={albumsMap} />
         </SearchContext>
         <h1 className="text-4xl text-white font-extrabold ">
           Amr Diab's Albums

@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { SearchIcon } from "lucide-react";
-import { Button } from "@/shadcn-components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -17,8 +16,15 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/shadcn-components/ui/dropdown-menu";
+import { album } from "./page";
 
-export default function SearchBar() {
+export default function SearchBar({
+  albumsMap,
+}: {
+  albumsMap: {
+    [key: string]: album;
+  };
+}) {
   const { query: searchQuery, refine, clear } = useSearchBox();
   const [Query, setQuery] = useState(searchQuery);
   const { push } = useRouter();
@@ -35,13 +41,10 @@ export default function SearchBar() {
       <DropdownMenu>
         <Command className="mb-5">
           <DropdownMenuTrigger>
-            <Button
-              variant="default"
-              className="inline-flex w-full justify-between"
-            >
+            <div className="px-4 py-2 inline-flex w-full items-center justify-between">
               Search
               <SearchIcon size={15} />
-            </Button>
+            </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-[95vw] max-w-[1520px] ">
             <CommandInput
@@ -51,21 +54,20 @@ export default function SearchBar() {
             />
             <CommandList className="mt-2">
               <CommandEmpty>No songs found.</CommandEmpty>
-              <CommandGroup className="">
+              <CommandGroup>
                 {items &&
                   items.map((song) => (
                     <CommandItem
                       key={song.objectID}
                       value={song.name}
-                      className="text-white"
-                      onSelect={() =>
-                        push(`/albums/${song.albumId}#${song.objectID}`)
-                      }
-                      onClick={() =>
-                        push(`/albums/${song.albumId}#${song.objectID}`)
-                      }
+                      className="text-white block"
+                      onSelect={() => push(`/albums/${song.albumId}`)}
+                      onClick={() => push(`/albums/${song.albumId}`)}
                     >
                       {song.name}
+                      <p className="text-sm text-greyShade">
+                        {albumsMap[song.albumId].title}
+                      </p>
                     </CommandItem>
                   ))}
               </CommandGroup>
