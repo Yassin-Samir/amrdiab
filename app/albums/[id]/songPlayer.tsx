@@ -168,7 +168,7 @@ function SongPlayer({
           ref={audioRef}
           onPause={() => setPaused(true)}
           onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
-          onCanPlayThrough={() => setLoading(false)}
+          onCanPlay={() => setLoading(false)}
           onError={(e) => {
             console.log({ error: e.currentTarget.error });
           }}
@@ -185,7 +185,7 @@ function SongPlayer({
               setPaused((prev) => !prev);
             }}
             fill="white"
-            size={20}
+            size={"20px"}
             className={`cursor-pointer ${
               Loading ? "!cursor-no-drop fill-[#afafaf] opacity-75" : ""
             }`}
@@ -198,7 +198,7 @@ function SongPlayer({
               setPaused((prev) => !prev);
             }}
             fill="white"
-            size={20}
+            size={"20px"}
             className={`cursor-pointer ${
               Loading ? "!cursor-no-drop fill-[#afafaf] opacity-75" : ""
             }`}
