@@ -13,7 +13,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const albumDoc = await db.collection("albums").doc(id).get();
   if (!albumDoc.exists) notFound();
-  return { title: `${albumDoc.data().title} Album` };
+  const albumData = albumDoc.data();
+  return {
+    title: `${albumData.title} Album`,
+    description: `Exclusively listen to Amr diab ${albumData.title} Album with no ads`,
+  };
 }
 type song = {
   link: string;
