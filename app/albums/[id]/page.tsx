@@ -21,7 +21,6 @@ type song = {
   id: string;
 };
 async function page({ params: { id } }: { params: { id: string } }) {
-  await new Promise((res, rej) => setTimeout(res, 5000));
   const albumDoc = await db.collection("albums").doc(id).get();
   if (!albumDoc.exists) notFound();
   const albumData = albumDoc.data();
