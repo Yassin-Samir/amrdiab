@@ -22,6 +22,7 @@ const config = {
       colors: {
         main: "#bf987c",
         greyShade: "#7b7a7a",
+        animationShade: "#1f1f1f",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
