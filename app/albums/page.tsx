@@ -1,7 +1,6 @@
-import Image, { StaticImageData } from "next/image";
 import { db } from "@/app/firebase";
-import Link from "next/link";
 import { Metadata } from "next";
+import Album from "./album";
 export const metadata: Metadata = {
   title: "Amr Diab Albums",
 };
@@ -23,7 +22,7 @@ async function page() {
         </h1>
         <div
           className="w-full mt-4 grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] 
-        gap-3 justify-items-center"
+      gap-3 justify-items-center"
         >
           {albums.docs &&
             albums.docs.map((albumDoc) => {
@@ -44,34 +43,4 @@ async function page() {
   );
 }
 
-function Album({
-  title,
-  poster,
-  year,
-  id,
-}: {
-  title: string;
-  poster: StaticImageData;
-  year: number | string;
-  id?: string;
-}) {
-  return (
-    <Link
-      href={`/albums/${id}`}
-      className="group py-3 px-2 overflow-hidden h-fit"
-    >
-      <Image
-        className={"object-contain select-none w-full h-full "}
-        src={poster}
-        alt={title}
-        width={200}
-        height={200}
-      />
-      <h1 className="text-lg transition-colors duration-200 ease-out group-hover:text-main  mt-2.5 text-white">
-        {title}
-      </h1>
-      <span className="block mt-1 text-base text-greyShade">{year}</span>
-    </Link>
-  );
-}
 export default page;
