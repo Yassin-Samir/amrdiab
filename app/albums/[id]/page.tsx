@@ -21,6 +21,7 @@ type song = {
   id: string;
 };
 async function page({ params: { id } }: { params: { id: string } }) {
+  await new Promise((res, rej) => setTimeout(res, 5000));
   const albumDoc = await db.collection("albums").doc(id).get();
   if (!albumDoc.exists) notFound();
   const albumData = albumDoc.data();
@@ -38,7 +39,7 @@ async function page({ params: { id } }: { params: { id: string } }) {
     };
   });
   return (
-    <main className="max-w-[1200px] mx-auto mt-[140px] mb-20">
+    <>
       {/* album title */}
       <div className="mx-auto text-center my-12">
         <h1 className="text-5xl text-white font-bold">{albumData.title}</h1>
@@ -99,7 +100,7 @@ async function page({ params: { id } }: { params: { id: string } }) {
           </SongProvider>
         </div>
       </div>
-    </main>
+    </>
   );
 }
 
