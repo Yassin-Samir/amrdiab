@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import SongPlayer from "./songPlayer";
 import { Metadata } from "next";
 import { SongProvider } from "./SongContext";
+import AlbumImage from "./albumImage";
 export async function generateMetadata({
   params: { id },
 }: {
@@ -46,14 +47,8 @@ async function page({ params: { id } }: { params: { id: string } }) {
       </div>
       <div className="flex w-[95%] mx-auto justify-between flex-wrap gap-5  ">
         {/* album data */}
-        <div className="md:w-[400px] h-fit">
-          <Image
-            src={albumData.poster}
-            alt={albumData.title}
-            width={100}
-            height={100}
-            className="w-full h-full md:max-w-[400px] md:max-h-[400px] object-contain"
-          />
+        <div className="md:w-[400px] h-fit w-full">
+          <AlbumImage poster={albumData.poster} title={albumData.title} />
           <div className="flex items-center mt-3">
             <svg
               className="inline w-4 h-4 mr-2.5"
