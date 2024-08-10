@@ -224,8 +224,12 @@ function SongPlayer({
               e.clientX - e.currentTarget.getBoundingClientRect().left;
             audioRef.current.currentTime =
               (clickX / e.currentTarget.clientWidth) * duration;
-            (clickX / e.currentTarget.clientWidth) * duration > 0 &&
-              setLoading(true);
+            if (
+              audioRef.current.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA
+            )
+              return;
+            if ((clickX / e.currentTarget.clientWidth) * duration <= 0) return;
+            setLoading(true);
           }}
         >
           {Loading ? (
@@ -270,7 +274,7 @@ function SongPlayer({
             <Slider
               max={1}
               min={0}
-              defaultValue={[0.3]}
+              defaultValue={[1]}
               className="h-2 w-2/6 max-w-[150px] select-none"
               step={0.01}
               value={[Volume]}
