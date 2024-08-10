@@ -21,7 +21,8 @@ const config = {
     extend: {
       colors: {
         main: "#bf987c",
-        greyShade:'#7b7a7a',
+        greyShade: "#7b7a7a",
+        animationShade: "#1f1f1f",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -70,10 +71,15 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        loading: {
+          from: { left: "-5%" },
+          to: { left: "100%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        loading: "loading 1.5s ease-in-out infinite ",
       },
     },
   },

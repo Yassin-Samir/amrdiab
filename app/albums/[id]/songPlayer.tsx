@@ -36,6 +36,7 @@ function SongPlayer({
   const [CurrentTime, setCurrentTime] = useState<number>(0);
   const [IsIos, setIsIos] = useState(false);
   const [Loop, setLoop] = useState(false);
+  const [Loading, setLoading] = useState(true);
   const { songs } = useSongs();
   useEffect(() => {
     if (!("mediaSession" in window.navigator)) return;
@@ -51,6 +52,55 @@ function SongPlayer({
         },
       ],
     });
+    /**
+     * media session api
+     */
+    /*  navigator.mediaSession.setActionHandler("pause", () =>
+      audioRef.current.pause()
+    );
+    navigator.mediaSession.setActionHandler(
+      "play",
+      async () => await audioRef.current.play()
+    );
+    navigator.mediaSession.setActionHandler("seekto", (e) => {
+      audioRef.current.currentTime = e.seekTime;
+    });
+    navigator.mediaSession.setActionHandler("previoustrack", async () => {
+      const songIndex = songs.current.findIndex((song) => song.id === id);
+      const songDoc =
+        songs.current[
+          songIndex === 0 ? songs.current.length - 1 : songIndex - 1
+        ];
+      songs.current.map(({ id, ref }) => {
+        if (id === songDoc.id) return;
+        ref.current.pause();
+      });
+      if (!IsIos) {
+        songDoc.ref.current.play();
+        return;
+      }
+      songDoc.ref.current.volume = 0;
+      await songDoc.ref.current.play();
+      songDoc.ref.current.volume = 1;
+    });
+    navigator.mediaSession.setActionHandler("nexttrack", async () => {
+      const songIndex = songs.current.findIndex((song) => song.id === id);
+      const songDoc =
+        songs.current[
+          songIndex === songs.current.length - 1 ? 0 : songIndex + 1
+        ];
+      songs.current.map(({ id, ref }) => {
+        if (id === songDoc.id) return;
+        ref.current.pause();
+      });
+      if (!IsIos) {
+        songDoc.ref.current.play();
+        return;
+      }
+      songDoc.ref.current.volume = 0;
+      await songDoc.ref.current.play();
+      songDoc.ref.current.volume = 1;
+    }); */
   }, [Paused]);
   useLayoutEffect(() => {
     const os = getOS();
@@ -62,6 +112,11 @@ function SongPlayer({
   useEffect(() => {
     songs.current.push({ id, ref: audioRef });
     setVolume(audioRef.current.volume);
+    if (audioRef.current.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+      setLoading(false);
+      return;
+    }
+    audioRef.current.load();
   }, []);
   return (
     <div className="bg-[#0c0c0c] w-full py-3 px-2 md:px-5 mb-1" id={id}>
@@ -74,8 +129,23 @@ function SongPlayer({
         <audio
           onTimeUpdate={async (e) => {
             setCurrentTime(e.currentTarget.currentTime);
+            setLoading(false);
             if (e.currentTarget.currentTime !== e.currentTarget.duration) {
               setPaused(audioRef.current.paused);
+              /* media session api stuff */
+              /*   if (
+                !("mediaSession" in window.navigator) ||
+                e.currentTarget.paused ||
+                Paused ||
+                navigator.mediaSession.metadata.title ===
+                  name.replace(/^\s+/g, "")
+              )
+                return;
+              navigator.mediaSession.setPositionState({
+                duration: duration,
+                playbackRate: e.currentTarget.playbackRate,
+                position: e.currentTarget.currentTime,
+              }); */
               return;
             }
             setPaused(true);
@@ -86,26 +156,27 @@ function SongPlayer({
                   songIndex === songs.current.length - 1 ? 0 : songIndex + 1
                 ];
             if (!IsIos) {
-              songDoc.ref.current.play();
+              await songDoc.ref.current.play();
               return;
             }
             songDoc.ref.current.volume = 0;
             await songDoc.ref.current.play();
             songDoc.ref.current.volume = 1;
           }}
+          preload="metadata"
           src={link}
           ref={audioRef}
-          onPause={() => {
-            setPaused(true);
-          }}
-          preload="metadata"
-          onVolumeChange={(e) => {
-            setVolume(e.currentTarget.volume);
+          onPause={() => setPaused(true)}
+          onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
+          onCanPlayThrough={() => setLoading(false)}
+          onError={(e) => {
+            console.log({ error: e.currentTarget.error });
           }}
         />
         {Paused ? (
           <FaPlay
             onClick={async () => {
+              if (Loading) return;
               songs.current.map((song) => {
                 if (song.id === id) return;
                 song.ref.current.pause();
@@ -115,17 +186,22 @@ function SongPlayer({
             }}
             fill="white"
             size={20}
-            className="cursor-pointer"
+            className={`cursor-pointer ${
+              Loading ? "!cursor-no-drop fill-[#afafaf] opacity-75" : ""
+            }`}
           />
         ) : (
           <FaPause
             onClick={() => {
+              if (Loading) return;
               audioRef.current.pause();
               setPaused((prev) => !prev);
             }}
             fill="white"
             size={20}
-            className="cursor-pointer"
+            className={`cursor-pointer ${
+              Loading ? "!cursor-no-drop fill-[#afafaf] opacity-75" : ""
+            }`}
           />
         )}
         <p className="text-white text-sm">
@@ -140,21 +216,30 @@ function SongPlayer({
         </p>
         {/* time slider */}
         <div
-          className="relative cursor-pointer w-9/12 h-3 bg-slate-50 text-black"
+          className="relative cursor-pointer w-9/12 h-3 bg-slate-50 text-black overflow-hidden"
           ref={sliderRef}
           onClick={(e) => {
+            if (Loading) return;
             const clickX =
               e.clientX - e.currentTarget.getBoundingClientRect().left;
             audioRef.current.currentTime =
               (clickX / e.currentTarget.clientWidth) * duration;
+            (clickX / e.currentTarget.clientWidth) * duration > 0 &&
+              setLoading(true);
           }}
         >
-          <div
-            className="absolute inset-0 bg-blue-600 w-0"
-            style={{
-              width: `${(CurrentTime / duration) * 100}%`,
-            }}
-          ></div>
+          {Loading ? (
+            <div className="w-1/4 absolute top-0 bg-blue-600  h-full animate-loading">
+              {" "}
+            </div>
+          ) : (
+            <div
+              className="absolute inset-0 bg-blue-600 w-0"
+              style={{
+                width: `${(CurrentTime / duration) * 100}%`,
+              }}
+            ></div>
+          )}
         </div>
         <TooltipProvider delayDuration={500}>
           <Tooltip>
