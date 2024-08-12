@@ -112,7 +112,7 @@ function SongPlayer({
   useEffect(() => {
     songs.current.push({ id, ref: audioRef });
     setVolume(audioRef.current.volume);
-    if (audioRef.current.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+    if (audioRef.current.readyState === HTMLMediaElement.HAVE_ENOUGH_DATA) {
       setLoading(false);
       return;
     }
