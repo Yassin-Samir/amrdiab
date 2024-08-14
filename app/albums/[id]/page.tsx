@@ -1,11 +1,10 @@
 import { db } from "@/app/firebase";
-import Head from "next/head";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import SongPlayer from "./songPlayer";
-import { Metadata } from "next";
+import { Metadata, ServerRuntime } from "next";
 import { SongProvider } from "./SongContext";
 import AlbumImage from "./albumImage";
+export const runtime: ServerRuntime = "nodejs";
 export async function generateMetadata({
   params: { id },
 }: {
@@ -103,25 +102,10 @@ async function page({ params: { id } }: { params: { id: string } }) {
 }
 
 function formatDateNatively(date: Date) {
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const day = date.getDate();
-  const monthIndex = date.getMonth();
-  const year = date.getFullYear();
-
-  return `${monthNames[monthIndex]} ${day}, ${year}`;
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 export default page;
