@@ -5,7 +5,7 @@ import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa";
 import { AiFillSound } from "react-icons/ai";
 import { ImLoop2 } from "react-icons/im";
-import { getOS } from "@/app/utils";
+import { getOS, sleep } from "@/app/utils";
 import { useSongs } from "./SongContext";
 import {
   Tooltip,
@@ -169,8 +169,10 @@ function SongPlayer({
           onPause={() => setPaused(true)}
           onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
           onCanPlay={() => setLoading(false)}
-          onError={(e) => {
+          onError={async (e) => {
             console.log({ error: e.currentTarget.error });
+            await sleep(2000);
+            e.currentTarget.load();
           }}
         />
         {Paused ? (
@@ -181,6 +183,7 @@ function SongPlayer({
                 if (song.id === id) return;
                 song.ref.current.pause();
               });
+              setLoading(true);
               await audioRef.current?.play();
               setPaused((prev) => !prev);
             }}
