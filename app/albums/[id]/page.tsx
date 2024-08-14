@@ -102,8 +102,6 @@ async function page({ params: { id } }: { params: { id: string } }) {
 }
 
 function formatDateNatively(date: Date) {
-  console.log(date.toString());
-
   return date.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
