@@ -168,7 +168,7 @@ function SongPlayer({
           ref={audioRef}
           onPause={() => setPaused(true)}
           onVolumeChange={(e) => setVolume(e.currentTarget.volume)}
-          onCanPlay={() => setLoading(false)}
+          onCanPlayThrough={() => setLoading(false)}
           onError={async (e) => {
             console.log({ error: e.currentTarget.error });
             await sleep(2000);
