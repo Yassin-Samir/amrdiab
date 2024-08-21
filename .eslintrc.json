@@ -1,0 +1,5 @@
+{
+  "extends": "next",
+  "rules": { "react/no-unescaped-entities": "off" },
+  "ignorePatterns": ["shadcn-components/**", "public/**"]
+}

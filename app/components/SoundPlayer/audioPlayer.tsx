@@ -17,14 +17,16 @@ function AudioPlayer() {
     };
     const onPlay = () => setPaused(false);
     const onPause = () => setPaused(true);
-    ref.current.addEventListener("timeupdate", onTimeUpdateCallback);
-    ref.current.addEventListener("play", onPlay);
-    ref.current.addEventListener("pause", onPause);
+    const audioElementCopy = { ...ref.current };
+    audioElementCopy.addEventListener("timeupdate", onTimeUpdateCallback);
+    audioElementCopy.addEventListener("play", onPlay);
+    audioElementCopy.addEventListener("pause", onPause);
     return () => {
-      ref.current.removeEventListener("play", onPlay);
-      ref.current.removeEventListener("pause", onPause);
-      ref.current.removeEventListener("timeupdate", onTimeUpdateCallback);
+      audioElementCopy.removeEventListener("play", onPlay);
+      audioElementCopy.removeEventListener("pause", onPause);
+      audioElementCopy.removeEventListener("timeupdate", onTimeUpdateCallback);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [headline]);
   if (!headline || !ref.current) return null;
   return (

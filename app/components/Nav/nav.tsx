@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "@/app/assets/AmrDiab-logo-2019.png";
 import { useLayoutEffect, useState } from "react";
-function nav() {
+function Nav() {
   const [TriggerBlack, setTriggerBlack] = useState(false);
   useLayoutEffect(() => {
     setTriggerBlack(document.documentElement.scrollTop >= 40);
@@ -81,4 +81,4 @@ function nav() {
   );
 }
 
-export default nav;
+export default Nav;

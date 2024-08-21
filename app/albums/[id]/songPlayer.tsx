@@ -117,6 +117,7 @@ function SongPlayer({
       return;
     }
     audioRef.current.load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="bg-[#0c0c0c] w-full py-3 px-2 md:px-5 mb-1" id={id}>

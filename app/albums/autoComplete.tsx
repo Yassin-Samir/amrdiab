@@ -8,14 +8,14 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/shadcn-components/ui/command";
+} from "@/app/shadcn-components/ui/command";
 import { useHits, useSearchBox } from "react-instantsearch";
 import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/shadcn-components/ui/dropdown-menu";
+} from "@/app/shadcn-components/ui/dropdown-menu";
 import { album } from "./page";
 
 export default function SearchBar({
@@ -35,6 +35,7 @@ export default function SearchBar({
       return;
     }
     refine(Query);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Query]);
   return (
     <>

@@ -2,7 +2,7 @@
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-
+import test from "@/app/assets/swipe/AD-NewYork-Home.jpg";
 export default function Album({
   title,
   poster,
@@ -23,16 +23,17 @@ export default function Album({
       className="group py-3 px-2 w-full h-fit overflow-hidden"
     >
       <div className=" relative">
-        {!Loaded && (
-          <div
-            ref={animationRef}
-            className="mx-auto w-full aspect-square bg-animationShade animate-pulse select-none"
-          ></div>
-        )}
         <Image
-          className={`object-contain select-none w-full h-full transition-opacity  ${
-            Loaded ? "" : "absolute z-[-1] opacity-0 inset-0"
-          }`}
+          className={`mx-auto object-contain w-full aspect-square pulse select-none absolute z-100 inset-0
+            transition-opacity
+            ${Loaded ? "opacity-0" : "opacity-100"}`}
+          alt="thumbnail"
+          src={`http://localhost:3000/albums/loadImage?src=${poster}`}
+          fill
+          priority
+        />
+        <Image
+          className={`object-contain select-none w-full h-full transition-opacity  `}
           src={poster}
           alt={title}
           width={200}
