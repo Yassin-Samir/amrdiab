@@ -62,7 +62,7 @@ function SoundPlayer({
             className="absolute z-[-1] inset-0 w-full h-full object-cover"
           />
           {/* header */}
-          <div className="flex justify-between px-5 items-center h-[150px] text-white">
+          <div className="flex justify-between flex-wrap px-5 items-center h-[150px] text-white">
             <h1 className="text-[2rem] font-bold">Latest Singles</h1>
 
             <Link
@@ -77,7 +77,8 @@ function SoundPlayer({
             ease-linear
             bg-main hover:bg-transparent 
             uppercase
-            text-center"
+            text-center
+            max-[500px]:grow"
             >
               LISTEN TO FULL TRACKS
             </Link>
