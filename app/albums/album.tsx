@@ -28,7 +28,7 @@ export default function Album({
             transition-opacity
             ${Loaded ? "opacity-0" : "opacity-100"}`}
           alt="thumbnail"
-          src={`http://localhost:3000/albums/loadImage?src=${poster}`}
+          src={`/albums/loadImage?src=${poster}`}
           fill
           priority
         />
