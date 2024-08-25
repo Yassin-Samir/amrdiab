@@ -1,28 +1,27 @@
-import { SSTConfig } from "sst";
-import { NextjsSite } from "sst/constructs";
+//@ts-nocheck
+/// <reference path="./.sst/platform/config.d.ts" />
 
-export default {
-  config(_input) {
+export default $config({
+  app(input) {
     return {
       name: "amrdiab",
-      region: "us-east-1",
+      removal: input?.stage === "production" ? "retain" : "remove",
+      home: "aws",
     };
   },
-  stacks(app) {
-    app.stack(function Site({ stack }) {
-      const site = new NextjsSite(stack, "site", {
-        environment: {
-          PRIVATE_KEY: process.env.PRIVATE_KEY!,
-          CLIENT_EMAIL: process.env.CLIENT_EMAIL!,
-          ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY!,
-          NEXT_PUBLIC_SEARCH_ALGOLIA_KEY:
-            process.env.NEXT_PUBLIC_SEARCH_ALGOLIA_KEY!,
-        },
-      });
-
-      stack.addOutputs({
-        SiteUrl: site.url,
-      });
+  async run() {
+    const bucket = new sst.aws.Bucket("hadabaBucket", {
+      public: true,
+    });
+    new sst.aws.Nextjs("hadaba", {
+      link: [bucket],
+      environment: {
+        PRIVATE_KEY: process.env.PRIVATE_KEY!,
+        CLIENT_EMAIL: process.env.CLIENT_EMAIL!,
+        ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY!,
+        NEXT_PUBLIC_SEARCH_ALGOLIA_KEY:
+          process.env.NEXT_PUBLIC_SEARCH_ALGOLIA_KEY!,
+      },
     });
   },
-} satisfies SSTConfig;
+});
