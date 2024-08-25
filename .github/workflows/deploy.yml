@@ -27,5 +27,7 @@ jobs:
           CLIENT_EMAIL: ${{ vars.CLIENT_EMAIL }}
           ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
           NEXT_PUBLIC_SEARCH_ALGOLIA_KEY: ${{ secrets.NEXT_PUBLIC_SEARCH_ALGOLIA_KEY }}
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
         run: |
           npx sst deploy --stage prod
