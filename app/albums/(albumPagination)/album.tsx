@@ -1,8 +1,7 @@
 "use client";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import test from "@/app/assets/swipe/AD-NewYork-Home.jpg";
+import { useRef, useState } from "react";
 export default function Album({
   title,
   poster,
