@@ -4,6 +4,8 @@ import SongPlayer from "./songPlayer";
 import { Metadata, ServerRuntime } from "next";
 import { SongProvider } from "./SongContext";
 import AlbumImage from "./albumImage";
+import { userAgent } from "next/server";
+import { headers } from "next/headers";
 export const runtime: ServerRuntime = "nodejs";
 export async function generateMetadata({
   params: { id },
@@ -41,6 +43,8 @@ async function page({ params: { id } }: { params: { id: string } }) {
       name: songData.name,
     };
   });
+  const headersList = headers();
+  const { os } = userAgent({ headers: headersList });
   return (
     <>
       {/* album title */}
@@ -88,6 +92,7 @@ async function page({ params: { id } }: { params: { id: string } }) {
             {albumsSongs &&
               albumsSongs.map((songData) => (
                 <SongPlayer
+                  os={os}
                   albumName={albumData.title}
                   poster={albumData.poster}
                   {...songData}

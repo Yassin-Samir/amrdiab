@@ -1,6 +1,6 @@
 "use client";
 import { Slider } from "@/shadcn-components/ui/slider";
-import React, { useLayoutEffect, useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa";
 import { AiFillSound } from "react-icons/ai";
@@ -21,6 +21,7 @@ function SongPlayer({
   id,
   poster,
   albumName,
+  os,
 }: {
   duration: number;
   albumName: string;
@@ -28,13 +29,14 @@ function SongPlayer({
   name: string;
   link: string;
   id: string;
+  os?: { name?: string; version?: string };
 }) {
   const audioRef = useRef<HTMLAudioElement>();
   const sliderRef = useRef<HTMLDivElement>();
   const [Paused, setPaused] = useState<boolean>(true);
   const [Volume, setVolume] = useState(0.5);
   const [CurrentTime, setCurrentTime] = useState<number>(0);
-  const [IsIos, setIsIos] = useState(false);
+  const IsIos = /IOS|MAC/gi.test(os.name);
   const [Loop, setLoop] = useState(false);
   const [Loading, setLoading] = useState(true);
   const { songs } = useSongs();
@@ -102,13 +104,12 @@ function SongPlayer({
       songDoc.ref.current.volume = 1;
     }); */
   }, [Paused]);
-  useLayoutEffect(() => {
-    const os = getOS();
-    if (os === "Mac" || os === "iOS") {
+  /*  useLayoutEffect(() => {
+    if (/IOS | MAC/gi.test(os.name)) {
       setIsIos(true);
       return;
     }
-  }, []);
+  }, [os]); */
   useEffect(() => {
     songs.current.push({ id, ref: audioRef });
     setVolume(audioRef.current.volume);
