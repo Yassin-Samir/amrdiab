@@ -30,7 +30,7 @@ function Footer() {
         <a
           target="_blank"
           className="font-bold"
-          href={"https://www.instagram.com/__yassinsamir__"}
+          href={"https://www.linkedin.com/in/yassin-samir/"}
         >
           Yassin Hegazy
         </a>
