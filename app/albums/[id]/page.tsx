@@ -1,11 +1,13 @@
 import { db } from "@/app/firebase";
 import { notFound } from "next/navigation";
-import SongPlayer from "./songPlayer";
+import SongViewer from "./songViewer";
 import { Metadata, ServerRuntime } from "next";
 import { SongProvider } from "./SongContext";
 import AlbumImage from "./albumImage";
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
+import { song } from "./types";
+import MediaPlayer from "./mediaPlayer";
 export const runtime: ServerRuntime = "nodejs";
 export async function generateMetadata({
   params: { id },
@@ -20,12 +22,7 @@ export async function generateMetadata({
     description: `Exclusively listen to Amr diab ${albumData.title} Album with no ads`,
   };
 }
-type song = {
-  link: string;
-  duration: number;
-  name: string;
-  id: string;
-};
+
 async function page({ params: { id } }: { params: { id: string } }) {
   const albumDoc = await db.collection("albums").doc(id).get();
   if (!albumDoc.exists) notFound();
@@ -88,17 +85,20 @@ async function page({ params: { id } }: { params: { id: string } }) {
           </p>
         </div>
         <div className="max-[968px]:w-3/4 h-full grow">
-          <SongProvider>
+          <SongProvider os={os} songs={albumsSongs}>
             {albumsSongs &&
-              albumsSongs.map((songData) => (
-                <SongPlayer
-                  os={os}
+              albumsSongs.map((songData, index) => (
+                <SongViewer
+                  index={index + 1}
                   albumName={albumData.title}
-                  poster={albumData.poster}
-                  {...songData}
                   key={songData.id}
+                  {...songData}
                 />
               ))}
+            <MediaPlayer
+              albumName={albumData.title}
+              poster={albumData.poster}
+            />
           </SongProvider>
         </div>
       </div>
