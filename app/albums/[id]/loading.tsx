@@ -41,19 +41,19 @@ function Loading() {
           {/* album song component */}
           <div className="mb-1 bg-[#0c0c0c] w-full py-3 px-2  md:px-5 animate-pulse">
             <div className="h-6 w-1/3 bg-animationShade"></div>
-            <div className="my-3 h-5 w-full bg-animationShade"></div>
+            <div className="mt-1 h-4 w-[10%] bg-animationShade"></div>
           </div>
           <div className="mb-1 bg-[#0c0c0c] w-full py-3 px-2  md:px-5 animate-pulse">
             <div className="h-6 w-1/3 bg-animationShade"></div>
-            <div className="my-3 h-5 w-full bg-animationShade"></div>
+            <div className="mt-1 h-4 w-[10%] bg-animationShade"></div>
           </div>
           <div className="mb-1 bg-[#0c0c0c] w-full py-3 px-2  md:px-5 animate-pulse">
             <div className="h-6 w-1/3 bg-animationShade"></div>
-            <div className="my-3 h-5 w-full bg-animationShade"></div>
+            <div className="mt-1 h-4 w-[10%] bg-animationShade"></div>
           </div>
           <div className="mb-1 bg-[#0c0c0c] w-full py-3 px-2  md:px-5 animate-pulse">
             <div className="h-6 w-1/3 bg-animationShade"></div>
-            <div className="my-3 h-5 w-full bg-animationShade"></div>
+            <div className="mt-1 h-4 w-[10%] bg-animationShade"></div>
           </div>
         </div>
       </div>
