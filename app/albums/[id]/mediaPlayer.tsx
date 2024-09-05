@@ -53,17 +53,10 @@ function MediaPlayer({
         },
       ],
     });
-    navigator.mediaSession.setActionHandler("pause", () =>
-      audioRef.current.pause()
-    );
-    navigator.mediaSession.setActionHandler(
-      "play",
-      async () => await audioRef.current.play()
-    );
     navigator.mediaSession.setActionHandler("seekto", (e) => {
       audioRef.current.currentTime = e.seekTime;
     });
-    navigator.mediaSession.setActionHandler("previoustrack", async () => {
+    navigator.mediaSession.setActionHandler("previoustrack", () => {
       const songIndex = songs.current.findIndex(
         ({ id }) => id === currentSong.id
       );
@@ -73,7 +66,7 @@ function MediaPlayer({
         ];
       updateCurrentSong({ ...songDoc });
     });
-    navigator.mediaSession.setActionHandler("nexttrack", async () => {
+    navigator.mediaSession.setActionHandler("nexttrack", () => {
       const songIndex = songs.current.findIndex(
         ({ id }) => id === currentSong.id
       );
@@ -82,6 +75,14 @@ function MediaPlayer({
           songIndex === songs.current.length - 1 ? 0 : songIndex + 1
         ];
       updateCurrentSong({ ...songDoc });
+    });
+    navigator.mediaSession.setActionHandler("play", async () => {
+      setLoading(true);
+      await audioRef.current.play();
+      setLoading(false);
+    });
+    navigator.mediaSession.setActionHandler("pause", () => {
+      audioRef.current.pause();
     });
   }, [currentSong]);
   useEffect(() => {
