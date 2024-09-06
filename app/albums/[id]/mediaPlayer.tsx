@@ -1,5 +1,11 @@
 "use client";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useSongs } from "./SongContext";
 import { Slider } from "@/shadcn-components/ui/slider";
 import { GrCaretPrevious, GrCaretNext } from "react-icons/gr";
@@ -23,13 +29,61 @@ function MediaPlayer({
   poster: string;
 }) {
   const { currentSong, songs, updateCurrentSong, os } = useSongs();
-  const [Loading, setLoading] = useState(true);
-  const audioRef = useRef<HTMLAudioElement>();
   const [CurrentTime, setCurrentTime] = useState<number>(0);
+  const [Loading, setLoading] = useState(true);
   const [Paused, setPaused] = useState(true);
-  const sliderRef = useRef<HTMLDivElement>(null);
   const [Volume, setVolume] = useState(1);
   const [Loop, setLoop] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>();
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const prevSong = useCallback(
+    () =>
+      updateCurrentSong((currentSong) => {
+        if (!currentSong) return currentSong;
+        const songIndex = songs.current.findIndex(
+          ({ id }) => id === currentSong.id
+        );
+        const songDoc =
+          songs.current[
+            songIndex === 0 ? songs.current.length - 1 : songIndex - 1
+          ];
+        return { ...songDoc };
+      }),
+    []
+  );
+  const nextSong = useCallback(
+    () =>
+      updateCurrentSong((currentSong) => {
+        if (!currentSong) return currentSong;
+        const songIndex = songs.current.findIndex(
+          ({ id }) => id === currentSong.id
+        );
+        const songDoc =
+          songs.current[
+            songIndex === songs.current.length - 1 ? 0 : songIndex + 1
+          ];
+        return { ...songDoc };
+      }),
+    []
+  );
+  const ontimeupdate = useCallback(
+    ({ currentTarget }: Event) => {
+      const audioElement = currentTarget as HTMLAudioElement;
+      setCurrentTime(audioElement.currentTime);
+      setLoading(false);
+      if (audioElement.currentTime !== audioElement.duration) return;
+      updateCurrentSong((currentSong) => {
+        if (!currentSong) return;
+        const songIndex = songs.current.findIndex(
+          ({ id }) => id === currentSong.id
+        );
+        if (Loop) return { ...currentSong };
+        if (songIndex === songs.current.length - 1) return songs.current[0];
+        return songs.current[songIndex + 1];
+      });
+    },
+    [Loop]
+  );
   useLayoutEffect(() => {
     audioRef.current = new Audio();
     return () => {
@@ -37,6 +91,25 @@ function MediaPlayer({
       audioRef.current.src = "";
       audioRef.current.load();
     };
+  }, []);
+  useEffect(() => {
+    if (!("mediaSession" in window.navigator)) return;
+    if (!audioRef.current) return;
+    navigator.mediaSession.setActionHandler("seekto", (e) => {
+      audioRef.current.currentTime = e.seekTime;
+    });
+    navigator.mediaSession.setActionHandler("previoustrack", prevSong);
+    navigator.mediaSession.setActionHandler("nexttrack", nextSong);
+    navigator.mediaSession.setActionHandler("play", async () => {
+      setLoading(true);
+      await audioRef.current.play();
+      setLoading(false);
+    });
+    navigator.mediaSession.setActionHandler("pause", () => {
+      audioRef.current.pause();
+    });
+    navigator.mediaSession.setActionHandler("seekbackward", null);
+    navigator.mediaSession.setActionHandler("seekforward", null);
   }, []);
   useEffect(() => {
     if (!("mediaSession" in window.navigator)) return;
@@ -50,39 +123,9 @@ function MediaPlayer({
         {
           src: poster,
           type: "image/jpg",
+          sizes: "600*600",
         },
       ],
-    });
-    navigator.mediaSession.setActionHandler("seekto", (e) => {
-      audioRef.current.currentTime = e.seekTime;
-    });
-    navigator.mediaSession.setActionHandler("previoustrack", () => {
-      const songIndex = songs.current.findIndex(
-        ({ id }) => id === currentSong.id
-      );
-      const songDoc =
-        songs.current[
-          songIndex === 0 ? songs.current.length - 1 : songIndex - 1
-        ];
-      updateCurrentSong({ ...songDoc });
-    });
-    navigator.mediaSession.setActionHandler("nexttrack", () => {
-      const songIndex = songs.current.findIndex(
-        ({ id }) => id === currentSong.id
-      );
-      const songDoc =
-        songs.current[
-          songIndex === songs.current.length - 1 ? 0 : songIndex + 1
-        ];
-      updateCurrentSong({ ...songDoc });
-    });
-    navigator.mediaSession.setActionHandler("play", async () => {
-      setLoading(true);
-      await audioRef.current.play();
-      setLoading(false);
-    });
-    navigator.mediaSession.setActionHandler("pause", () => {
-      audioRef.current.pause();
     });
   }, [currentSong]);
   useEffect(() => {
@@ -93,30 +136,8 @@ function MediaPlayer({
     audioObj.src = currentSong.link;
     audioObj.load();
     audioObj.volume = Volume;
-    audioObj.onplaying = () => {
-      setPaused(false);
-    };
-    audioObj.onpause = () => {
-      setPaused(true);
-    };
-    audioObj.ontimeupdate = ({ currentTarget }) => {
-      const audioElement = currentTarget as HTMLAudioElement;
-      setCurrentTime(audioElement.currentTime);
-      setLoading(false);
-      if (audioElement.currentTime !== audioElement.duration) return;
-      const songIndex = songs.current.findIndex(
-        ({ id }) => id === currentSong.id
-      );
-      if (Loop) {
-        updateCurrentSong({ ...currentSong });
-        return;
-      }
-      if (songIndex === songs.current.length - 1) {
-        updateCurrentSong(songs.current[0]);
-        return;
-      }
-      updateCurrentSong(songs.current[songIndex + 1]);
-    };
+    audioObj.onplaying = () => setPaused(false);
+    audioObj.onpause = () => setPaused(true);
     (async () => {
       try {
         setLoading(true);
@@ -134,9 +155,13 @@ function MediaPlayer({
     };
   }, [currentSong]);
   useEffect(() => {
-    if (!audioRef.current || !currentSong) return;
+    if (!audioRef.current) return;
     audioRef.current.volume = Volume;
   }, [Volume]);
+  useEffect(() => {
+    if (!audioRef.current) return;
+    audioRef.current.ontimeupdate = ontimeupdate;
+  }, [ontimeupdate]);
   if (!currentSong) return;
   return (
     <div
@@ -158,12 +183,13 @@ function MediaPlayer({
     gap-2
     `}
     >
-      <div className="w-1/5 max-w-[230px] overflow-hidden">
+      <div className="w-1/5 max-w-[230px] overflow-hidden ">
         <p className="text-xs sm:text-sm text-greyShade tracking-widest">
           PLAYING
         </p>
-        <h1 className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold">
+        <h1 className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold max-h-7 text-nowrap relative">
           {currentSong.name}
+          <div className="h-full w-1/5 absolute top-0 right-0 bg-gradient-to-r from-transparent to-animationShade"></div>
         </h1>
       </div>
       <div className="grow">
@@ -175,16 +201,7 @@ function MediaPlayer({
               fill="white"
               onClick={() => {
                 if (Loading) return;
-                const songIndex = songs.current.findIndex(
-                  ({ id }) => id === currentSong.id
-                );
-                if (songIndex === 0) {
-                  updateCurrentSong({
-                    ...songs.current[songs.current.length - 1],
-                  });
-                  return;
-                }
-                updateCurrentSong({ ...songs.current[songIndex - 1] });
+                prevSong();
               }}
               className="cursor-pointer text-lg md:text-xl lg:text-2xl"
             />
@@ -211,7 +228,6 @@ function MediaPlayer({
                 className="cursor-pointer text-xl md:text-2xl lg:text-3xl"
                 onClick={() => {
                   if (Loading) return;
-                  setPaused((prev) => !prev);
                   audioRef.current.pause();
                 }}
                 color="white"
@@ -225,14 +241,7 @@ function MediaPlayer({
               fill="white"
               onClick={() => {
                 if (Loading) return;
-                const songIndex = songs.current.findIndex(
-                  ({ id }) => id === currentSong.id
-                );
-                if (songIndex === songs.current.length - 1) {
-                  updateCurrentSong({ ...songs.current[0] });
-                  return;
-                }
-                updateCurrentSong({ ...songs.current[songIndex + 1] });
+                nextSong();
               }}
             />
             <TooltipProvider delayDuration={500}>
