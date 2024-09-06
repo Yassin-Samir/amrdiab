@@ -12,7 +12,4 @@ function getOS() {
   for (i = 0; i < os.length; i++)
     if (new RegExp(os[i], "i").test(uA)) return os[i];
 }
-function sleep(ms: number) {
-  return new Promise((res) => setTimeout(res, ms));
-}
-export { getOS, sleep };
+export { getOS };
