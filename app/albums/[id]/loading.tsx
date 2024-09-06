@@ -51,7 +51,7 @@ function Loading() {
 function SongSkeleton() {
   return (
     <div className="mb-1 bg-[#0c0c0c] w-full py-3 px-2  md:px-5 animate-pulse flex items-center max-h-16">
-      <div className="mr-4 w-[17px] h-[19px] bg-animationShade"></div>
+      <div className="mr-4 w-[9px] h-[19px] bg-animationShade"></div>
       <div className="w-1/3">
         <div className="h-6 w-[60%] bg-animationShade"></div>
         <div className="mt-0.5 h-4 w-2/5 bg-animationShade"></div>
