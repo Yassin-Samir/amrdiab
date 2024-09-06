@@ -39,26 +39,25 @@ function Loading() {
         {/* albums songs */}
         <div className="max-[968px]:w-3/4 h-full grow">
           {/* album song component */}
-          <div className="mb-1 bg-[#0c0c0c] w-full py-3 px-2  md:px-5 animate-pulse">
-            <div className="h-6 w-1/3 bg-animationShade"></div>
-            <div className="mt-1 h-4 w-[10%] bg-animationShade"></div>
-          </div>
-          <div className="mb-1 bg-[#0c0c0c] w-full py-3 px-2  md:px-5 animate-pulse">
-            <div className="h-6 w-1/3 bg-animationShade"></div>
-            <div className="mt-1 h-4 w-[10%] bg-animationShade"></div>
-          </div>
-          <div className="mb-1 bg-[#0c0c0c] w-full py-3 px-2  md:px-5 animate-pulse">
-            <div className="h-6 w-1/3 bg-animationShade"></div>
-            <div className="mt-1 h-4 w-[10%] bg-animationShade"></div>
-          </div>
-          <div className="mb-1 bg-[#0c0c0c] w-full py-3 px-2  md:px-5 animate-pulse">
-            <div className="h-6 w-1/3 bg-animationShade"></div>
-            <div className="mt-1 h-4 w-[10%] bg-animationShade"></div>
-          </div>
+          <SongSkeleton />
+          <SongSkeleton />
+          <SongSkeleton />
+          <SongSkeleton />
         </div>
       </div>
     </div>
   );
 }
-
+function SongSkeleton() {
+  return (
+    <div className="mb-1 bg-[#0c0c0c] w-full py-3 px-2  md:px-5 animate-pulse flex items-center max-h-16">
+      <div className="mr-4 w-[17px] h-[19px] bg-animationShade"></div>
+      <div className="w-1/3">
+        <div className="h-6 w-[60%] bg-animationShade"></div>
+        <div className="mt-0.5 h-4 w-2/5 bg-animationShade"></div>
+      </div>
+      <div className="ml-auto bg-animationShade w-[34px] mr-[11px] h-5"></div>
+    </div>
+  );
+}
 export default Loading;
