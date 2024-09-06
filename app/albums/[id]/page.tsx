@@ -32,12 +32,12 @@ async function page({ params: { id } }: { params: { id: string } }) {
     .where("albumId", "==", id)
     .get();
   const albumsSongs = songsQuery.docs.map((song): song => {
-    const songData = song.data();
+    const songData = song.data() as song;
     return {
       id: song.id,
       link: songData.link,
       duration: songData.duration,
-      name: songData.name,
+      name: songData.name.replace(/([A-Z])/g, " $1").trim(),
     };
   });
   const headersList = headers();
