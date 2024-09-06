@@ -187,15 +187,19 @@ function MediaPlayer({
         <p className="text-xs sm:text-sm text-greyShade tracking-widest">
           PLAYING
         </p>
-        <h1 className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold max-h-7 text-nowrap relative">
+        <h1
+          className="text-xs sm:text-sm md:text-base lg:text-lg 
+        font-semibold max-sm:max-h-4 text-nowrap relative 
+        whitespace-nowrap break-keep "
+        >
           {currentSong.name}
-          <div className="h-full w-1/5 absolute top-0 right-0 bg-gradient-to-r from-transparent to-animationShade"></div>
+          <div className="z-50 h-full w-1/5 absolute top-0 right-0 bg-gradient-to-r from-transparent to-animationShade"></div>
         </h1>
       </div>
       <div className="grow">
         <div className="max-w-[720px] w-full mx-auto">
           <div className="gap-4  flex items-center justify-center mb-4">
-            <ImLoop2 size={15} className={`invisible`} />
+            <ImLoop2 size={15} className={"invisible"} />
             <GrCaretPrevious
               color="white"
               fill="white"
