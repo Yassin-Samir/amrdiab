@@ -59,7 +59,7 @@ function SongViewer({
             currentSongId === id ? "font-medium" : ""
           }`}
         >
-          {name?.replace(/([A-Z])/g, " $1").trim()}
+          {name}
         </h3>
         <p className="text-xs text-inherit">{albumName}</p>
       </div>
