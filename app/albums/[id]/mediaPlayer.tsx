@@ -132,13 +132,14 @@ function MediaPlayer({
         });
         navigator.mediaSession.setActionHandler("previoustrack", prevSong);
         navigator.mediaSession.setActionHandler("nexttrack", nextSong);
+        navigator.mediaSession.setActionHandler("stop", () => audioObj.pause());
         navigator.mediaSession.setActionHandler("play", async () => {
           setLoading(true);
           await audioObj.play();
           setLoading(false);
         });
-        navigator.mediaSession.setActionHandler("pause", () =>
-          audioRef.current.pause()
+        navigator.mediaSession.setActionHandler("pause", (e) =>
+          audioObj.pause()
         );
         navigator.mediaSession.setActionHandler("seekbackward", null);
         navigator.mediaSession.setActionHandler("seekforward", null);
@@ -150,6 +151,7 @@ function MediaPlayer({
       setCurrentTime(0);
       setLoading(true);
       audioObj.pause();
+      console.log("ee");
     };
   }, [currentSong]);
   useEffect(() => {
@@ -215,6 +217,7 @@ function MediaPlayer({
                   setPaused((prev) => !prev);
                   try {
                     setLoading(true);
+                    await audioRef.current.play();
                     setLoading(false);
                   } catch (error) {
                     console.log({ PlayError: error });
