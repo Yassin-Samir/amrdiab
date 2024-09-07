@@ -86,6 +86,8 @@ function MediaPlayer({
   );
   useLayoutEffect(() => {
     audioRef.current = new Audio();
+    audioRef.current.src = "/5-seconds-silence.mp3";
+    audioRef.current.load();
     return () => {
       audioRef.current.pause();
       audioRef.current.src = "";
@@ -93,41 +95,10 @@ function MediaPlayer({
     };
   }, []);
   useEffect(() => {
-    if (!("mediaSession" in window.navigator)) return;
-    if (!audioRef.current) return;
-    navigator.mediaSession.setActionHandler("seekto", (e) => {
-      audioRef.current.currentTime = e.seekTime;
-    });
-    navigator.mediaSession.setActionHandler("previoustrack", prevSong);
-    navigator.mediaSession.setActionHandler("nexttrack", nextSong);
-    navigator.mediaSession.setActionHandler("play", async () => {
-      setLoading(true);
-      await audioRef.current.play();
-      setLoading(false);
-    });
-    navigator.mediaSession.setActionHandler("pause", () => {
-      audioRef.current.pause();
-    });
-    navigator.mediaSession.setActionHandler("seekbackward", null);
-    navigator.mediaSession.setActionHandler("seekforward", null);
+    if (!audioRef.current || audioRef.current.src !== "/5-seconds-silence.mp3")
+      return;
+    audioRef.current.play();
   }, []);
-  useEffect(() => {
-    if (!("mediaSession" in window.navigator)) return;
-    if (!audioRef.current) return;
-    if (!currentSong) return;
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: currentSong.name.replace(/^\s+/g, ""),
-      artist: "Amr diab",
-      album: albumName,
-      artwork: [
-        {
-          src: poster,
-          type: "image/jpg",
-          sizes: "600*600",
-        },
-      ],
-    });
-  }, [currentSong]);
   useEffect(() => {
     if (!currentSong) return;
     const audioObj = audioRef.current;
@@ -141,9 +112,36 @@ function MediaPlayer({
     (async () => {
       try {
         setLoading(true);
-        await audioRef.current.play();
+        await audioObj.play();
         setLoading(false);
-        setPaused(false);
+        if (!("mediaSession" in window.navigator)) return;
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: currentSong.name,
+          artist: "Amr diab",
+          album: albumName,
+          artwork: [
+            {
+              src: poster,
+              type: "image/jpg",
+              sizes: "600*600",
+            },
+          ],
+        });
+        navigator.mediaSession.setActionHandler("seekto", (e) => {
+          audioRef.current.currentTime = e.seekTime;
+        });
+        navigator.mediaSession.setActionHandler("previoustrack", prevSong);
+        navigator.mediaSession.setActionHandler("nexttrack", nextSong);
+        navigator.mediaSession.setActionHandler("play", async () => {
+          setLoading(true);
+          await audioObj.play();
+          setLoading(false);
+        });
+        navigator.mediaSession.setActionHandler("pause", () =>
+          audioRef.current.pause()
+        );
+        navigator.mediaSession.setActionHandler("seekbackward", null);
+        navigator.mediaSession.setActionHandler("seekforward", null);
       } catch (error) {
         console.log({ InitialPlayError: error });
       }
@@ -166,21 +164,21 @@ function MediaPlayer({
   return (
     <div
       className={`
-        fixed  
-    bottom-0 
-    left-0
-    z-[1000]
-    w-full
-    px-2
-    md:px-4
-    py-4
-  bg-animationShade
-  text-white
-    flex 
-    justify-between
-    items-center
-    md:gap-4
-    gap-2
+      fixed  
+      bottom-0 
+      left-0
+      z-[1000]
+      w-full
+      px-2
+      md:px-4
+      py-4
+    bg-animationShade
+    text-white
+      flex 
+      justify-between
+      items-center
+      md:gap-4
+      gap-2
     `}
     >
       <div className="w-1/5 max-w-[230px] overflow-hidden ">
@@ -217,7 +215,6 @@ function MediaPlayer({
                   setPaused((prev) => !prev);
                   try {
                     setLoading(true);
-                    await audioRef.current.play();
                     setLoading(false);
                   } catch (error) {
                     console.log({ PlayError: error });
@@ -341,9 +338,7 @@ function MediaPlayer({
               className="h-2  w-full select-none"
               step={0.01}
               value={[Volume]}
-              onValueChange={([value]) => {
-                setVolume(value);
-              }}
+              onValueChange={([value]) => setVolume(value)}
             />
           </>
         )}
