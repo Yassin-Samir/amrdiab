@@ -6,7 +6,7 @@ import { SongProvider } from "./SongContext";
 import AlbumImage from "./albumImage";
 import { userAgent } from "next/server";
 import { headers } from "next/headers";
-import { song } from "./types";
+import { album, song } from "./types";
 import MediaPlayer from "./mediaPlayer";
 export const runtime: ServerRuntime = "nodejs";
 export async function generateMetadata({
@@ -26,7 +26,7 @@ export async function generateMetadata({
 async function page({ params: { id } }: { params: { id: string } }) {
   const albumDoc = await db.collection("albums").doc(id).get();
   if (!albumDoc.exists) notFound();
-  const albumData = albumDoc.data();
+  const albumData = albumDoc.data() as album;
   const songsQuery = await db
     .collection("songs")
     .where("albumId", "==", id)
@@ -90,13 +90,13 @@ async function page({ params: { id } }: { params: { id: string } }) {
               albumsSongs.map((songData, index) => (
                 <SongViewer
                   index={index + 1}
-                  albumName={albumData.title}
+                  albumName={albumData.title.trim()}
                   key={songData.id}
                   {...songData}
                 />
               ))}
             <MediaPlayer
-              albumName={albumData.title}
+              albumName={albumData.title.trim()}
               poster={albumData.poster}
             />
           </SongProvider>

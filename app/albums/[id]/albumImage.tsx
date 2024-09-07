@@ -1,14 +1,8 @@
 "use client";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import React, { useState } from "react";
 
-function AlbumImage({
-  poster,
-  title,
-}: {
-  poster: StaticImageData;
-  title: string;
-}) {
+function AlbumImage({ poster, title }: { poster: string; title: string }) {
   const [Loaded, setLoaded] = useState(false);
   return (
     <div className="relative overflow-hidden">
