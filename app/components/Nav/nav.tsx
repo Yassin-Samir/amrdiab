@@ -32,7 +32,7 @@ function nav() {
               className="object-contain  size-full"
             />
           </Link>
-          <ul className="flex  w-1/2 justify-center gap-x-5 items-center h-full">
+          <ul className="flex  grow justify-center gap-x-5 items-center h-full">
             <li>
               <Link
                 href={"/"}
@@ -67,7 +67,7 @@ function nav() {
               </Link>
             </li>
           </ul>
-          <Link href={"/"} className=" cursor-pointer w-20 h-12">
+          <Link href={"/"} className="w-20 h-12">
             <Image
               quality={100}
               src={logo}
