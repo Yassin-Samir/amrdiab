@@ -1,8 +1,9 @@
-import { Timestamp } from "firebase-admin/firestore";
+import { DocumentReference, Timestamp } from "firebase-admin/firestore";
 
 export type song = {
   link: string;
   duration: number;
+  albumRef?: DocumentReference;
   name: string;
   id: string;
 };

@@ -29,7 +29,7 @@ async function page({ params: { id } }: { params: { id: string } }) {
   const albumData = albumDoc.data() as album;
   const songsQuery = await db
     .collection("songs")
-    .where("albumId", "==", id)
+    .where("albumRef", "==", db.collection("albums").doc(id))
     .get();
   const albumsSongs = songsQuery.docs.map((song): song => {
     const songData = song.data() as song;
