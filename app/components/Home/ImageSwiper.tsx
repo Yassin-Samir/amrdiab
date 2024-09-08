@@ -25,6 +25,7 @@ function ImageSwiper() {
               key={ImgSrc.src}
               alt="amr diab image"
               loading="eager"
+              fetchPriority="high"
               className={`absolute inset-0 w-full h-full object-cover z-[-1] 
                 opacity-0 transition-[opacity] 
                 duration-200 ease-in ${
