@@ -21,6 +21,7 @@ export default function Album({
     <Link
       href={`/albums/${id}`}
       className="group py-3 px-2 w-full h-fit overflow-hidden"
+      prefetch
     >
       <div className=" relative">
         {!Loaded && (
