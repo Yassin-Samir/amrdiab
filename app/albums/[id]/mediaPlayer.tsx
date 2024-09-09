@@ -78,8 +78,9 @@ function MediaPlayer({
           ({ id }) => id === currentSong.id
         );
         if (Loop) return { ...currentSong };
-        if (songIndex === songs.current.length - 1) return songs.current[0];
-        return songs.current[songIndex + 1];
+        if (songIndex === songs.current.length - 1)
+          return { ...songs.current[0] };
+        return { ...songs.current[songIndex + 1] };
       });
     },
     [Loop]
