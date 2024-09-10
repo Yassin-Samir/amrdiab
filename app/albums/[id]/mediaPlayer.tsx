@@ -66,25 +66,6 @@ function MediaPlayer({
       }),
     []
   );
-  const ontimeupdate = useCallback(
-    ({ currentTarget }: Event) => {
-      const audioElement = currentTarget as HTMLAudioElement;
-      setCurrentTime(audioElement.currentTime);
-      setLoading(false);
-      if (audioElement.currentTime !== audioElement.duration) return;
-      updateCurrentSong((currentSong) => {
-        if (!currentSong) return;
-        const songIndex = songs.current.findIndex(
-          ({ id }) => id === currentSong.id
-        );
-        if (Loop) return { ...currentSong };
-        if (songIndex === songs.current.length - 1)
-          return { ...songs.current[0] };
-        return { ...songs.current[songIndex + 1] };
-      });
-    },
-    [Loop]
-  );
   useLayoutEffect(() => {
     audioRef.current = new Audio();
     audioRef.current.src = "/5-seconds-silence.mp3";
@@ -96,8 +77,27 @@ function MediaPlayer({
     };
   }, []);
   useEffect(() => {
-    if (!audioRef.current || audioRef.current.src !== "/5-seconds-silence.mp3")
-      return;
+    if (!audioRef.current) return;
+    audioRef.current.ontimeupdate = ({ currentTarget }: Event) => {
+      const audioElement = currentTarget as HTMLAudioElement;
+      setCurrentTime(audioElement.currentTime);
+      setLoading(false);
+    };
+    audioRef.current.onended = ({ currentTarget }: Event) => {
+      if ((currentTarget as HTMLAudioElement).loop) return;
+      updateCurrentSong((currentSong) => {
+        if (!currentSong) return;
+        const songIndex = songs.current.findIndex(
+          ({ id }) => id === currentSong.id
+        );
+        if (songIndex === songs.current.length - 1)
+          return { ...songs.current[0] };
+        return { ...songs.current[songIndex + 1] };
+      });
+    };
+    audioRef.current.onplaying = () => setPaused(false);
+    audioRef.current.onpause = () => setPaused(true);
+    if (audioRef.current.src !== "/5-seconds-silence.mp3") return;
     audioRef.current.play();
   }, []);
   useEffect(() => {
@@ -108,8 +108,6 @@ function MediaPlayer({
     audioObj.src = currentSong.link;
     audioObj.load();
     audioObj.volume = Volume;
-    audioObj.onplaying = () => setPaused(false);
-    audioObj.onpause = () => setPaused(true);
     (async () => {
       try {
         setLoading(true);
@@ -129,7 +127,7 @@ function MediaPlayer({
           ],
         });
         navigator.mediaSession.setActionHandler("seekto", (e) => {
-          audioRef.current.currentTime = e.seekTime;
+          audioObj.currentTime = e.seekTime;
         });
         navigator.mediaSession.setActionHandler("previoustrack", prevSong);
         navigator.mediaSession.setActionHandler("nexttrack", nextSong);
@@ -152,17 +150,13 @@ function MediaPlayer({
       setCurrentTime(0);
       setLoading(true);
       audioObj.pause();
-      console.log("ee");
     };
   }, [currentSong]);
   useEffect(() => {
     if (!audioRef.current) return;
     audioRef.current.volume = Volume;
-  }, [Volume]);
-  useEffect(() => {
-    if (!audioRef.current) return;
-    audioRef.current.ontimeupdate = ontimeupdate;
-  }, [ontimeupdate]);
+    audioRef.current.loop = Loop;
+  }, [Volume, Loop]);
   if (!currentSong) return;
   return (
     <div
