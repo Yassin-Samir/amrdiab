@@ -82,6 +82,20 @@ function MediaPlayer({
       const audioElement = currentTarget as HTMLAudioElement;
       setCurrentTime(audioElement.currentTime);
       setLoading(false);
+      if (!("mediaSession" in window.navigator)) return;
+      if (!window.navigator.mediaSession.metadata) return;
+      const { duration, playbackRate, currentTime: position } = audioElement;
+      if (
+        [duration, playbackRate, position].filter((value) =>
+          Number.isNaN(value)
+        ).length
+      )
+        return;
+      navigator.mediaSession.setPositionState({
+        duration,
+        playbackRate,
+        position,
+      });
     };
     audioRef.current.onended = ({ currentTarget }: Event) => {
       if ((currentTarget as HTMLAudioElement).loop) return;
