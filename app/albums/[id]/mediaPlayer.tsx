@@ -140,15 +140,7 @@ function MediaPlayer({
     };
     audioRef.current.onended = ({ currentTarget }: Event) => {
       if ((currentTarget as HTMLAudioElement).loop) return;
-      updateCurrentSong((currentSong) => {
-        if (!currentSong) return;
-        const songIndex = songs.current.findIndex(
-          ({ id }) => id === currentSong.id
-        );
-        if (songIndex === songs.current.length - 1)
-          return { ...songs.current[0] };
-        return { ...songs.current[songIndex + 1] };
-      });
+      nextSong();
     };
     audioRef.current.onplaying = () => setPaused(false);
     audioRef.current.onpause = () => setPaused(true);
