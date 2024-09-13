@@ -32,7 +32,7 @@ function SoundPlayer({
   background: StaticImageData;
 }) {
   return (
-    <SoundProvider>
+    <>
       <h1 className="text-5xl font-extrabold  text-white text-center mt-[200px] mx-auto ">
         Listen to Amr Diab
       </h1>
@@ -83,49 +83,42 @@ function SoundPlayer({
               LISTEN TO FULL TRACKS
             </Link>
           </div>
-          <ul>
-            {latestSingles &&
-              latestSingles.map((songData) => (
-                <TrackListItem {...songData} key={songData.src} />
-              ))}
-            <div className="w-full bg-transparent h-[10rem]"></div>
-          </ul>
-          <AudioPlayer />
+          <SoundProvider tracks={latestSingles}>
+            <ul>
+              {latestSingles &&
+                latestSingles.map((songData) => (
+                  <TrackListItem {...songData} key={songData.src} />
+                ))}
+              <div className="w-full bg-transparent h-[10rem]"></div>
+            </ul>
+            <AudioPlayer />
+          </SoundProvider>
         </div>
       </div>
-    </SoundProvider>
+    </>
   );
 }
 
 function TrackListItem({ headline, src }: { headline: string; src: string }) {
-  const audioRef = useRef<HTMLAudioElement>(null);
   const soundContext = useSoundContext();
+  const { currentTrack, updateTrack } = soundContext;
   return (
     <>
       <li className="p-5 flex items-center justify-start hover:bg-[#0a0a30]">
-        <audio ref={audioRef} src={src} preload="metadata" />
         <PlayIcon
           className="cursor-pointer size-5"
-          onClick={() => {
-            if (soundContext.ref.current) {
-              soundContext.ref.current.currentTime = 0;
-              soundContext.headline === headline ||
-                soundContext.ref.current.pause();
-            }
-            soundContext.ref.current = audioRef.current;
-            soundContext.editContext({ headline });
-          }}
+          onClick={() => updateTrack({ headline, src })}
           color="#bf987c"
         />
         <span
           className={`text-xl font-medium ${
-            soundContext.headline === headline ? "!text-white" : ""
+            currentTrack?.headline === headline ? "!text-white" : ""
           } text-greyShade ml-5`}
         >
           {headline}
         </span>
         <span className="ml-auto  text-greyShade">0:30</span>
-      </li>{" "}
+      </li>
     </>
   );
 }

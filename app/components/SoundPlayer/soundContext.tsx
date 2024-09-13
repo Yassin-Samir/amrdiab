@@ -1,23 +1,28 @@
 "use client";
 import React, { createContext, Ref, useRef, useState } from "react";
+import { track } from "./types";
 
 export const soundContext = createContext<{
-  headline: string | null;
-  ref: React.MutableRefObject<HTMLAudioElement | undefined> | null;
-  editContext: React.Dispatch<
-    React.SetStateAction<{ headline: string }>
-  > | null;
+  currentTrack: track;
+  tracksRef: React.MutableRefObject<track[]>;
+  updateTrack: React.Dispatch<React.SetStateAction<track>>;
 }>({
-  headline: null,
-  ref: null,
-  editContext: null,
+  currentTrack: null,
+  tracksRef: null,
+  updateTrack: null,
 });
-function SoundProvider({ children }: { children: React.ReactNode }) {
-  const [Track, setTrack] = useState({ headline: "fgdgfd" });
-  const audioRef = useRef<HTMLAudioElement>();
+function SoundProvider({
+  children,
+  tracks,
+}: {
+  children: React.ReactNode;
+  tracks: track[];
+}) {
+  const [currentTrack, setTrack] = useState(null);
+  const tracksRef = useRef<track[]>(tracks);
   return (
     <soundContext.Provider
-      value={{ editContext: setTrack, headline: Track.headline, ref: audioRef }}
+      value={{ updateTrack: setTrack, currentTrack, tracksRef }}
     >
       {children}
     </soundContext.Provider>

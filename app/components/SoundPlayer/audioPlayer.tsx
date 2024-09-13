@@ -1,98 +1,150 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import useSoundContext from "./useSoundContext";
-
+import { GrCaretPrevious, GrCaretNext } from "react-icons/gr";
+import { FaPlayCircle, FaPauseCircle } from "react-icons/fa";
 function AudioPlayer() {
-  const { headline, ref } = useSoundContext();
-  const [loadingPercent, setLoadingPercent] = useState<number>(0);
+  const { currentTrack, tracksRef, updateTrack } = useSoundContext();
+  const [CurrentTime, setCurrentTime] = useState<number>(0);
   const [Paused, setPaused] = useState<boolean>(false);
+  const audioRef = useRef<HTMLAudioElement>();
+  useLayoutEffect(() => {
+    audioRef.current = new Audio();
+  }, []);
   useEffect(() => {
-    if (!ref.current) return;
-    ref.current.play();
-    const onTimeUpdateCallback = ({ currentTarget }: Event) => {
-      setLoadingPercent(
-        ((currentTarget as HTMLAudioElement)?.currentTime /
-          (currentTarget as HTMLAudioElement)?.duration) *
-          100
-      );
+    audioRef.current.ontimeupdate = ({ currentTarget }: Event) => {
+      const audioElement = currentTarget as HTMLAudioElement;
+      setCurrentTime(audioElement.currentTime);
     };
-    const onPlay = () => setPaused(false);
-    const onPause = () => setPaused(true);
-    ref.current.addEventListener("timeupdate", onTimeUpdateCallback);
-    ref.current.addEventListener("play", onPlay);
-    ref.current.addEventListener("pause", onPause);
-    return () => {
-      ref.current.removeEventListener("play", onPlay);
-      ref.current.removeEventListener("pause", onPause);
-      ref.current.removeEventListener("timeupdate", onTimeUpdateCallback);
-    };
-  }, [headline]);
-  if (!headline || !ref.current) return null;
+    audioRef.current.onplaying = () => setPaused(false);
+    audioRef.current.onpause = () => setPaused(true);
+    audioRef.current.onended = nextSong;
+  }, []);
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+    if (!currentTrack) return;
+    audioRef.current.src = currentTrack.src;
+    audioRef.current.load();
+    audioRef.current.play();
+  }, [currentTrack]);
+  const prevSong = useCallback(
+    () =>
+      updateTrack((currentTrack) => {
+        if (!currentTrack) return currentTrack;
+        const songIndex = tracksRef.current.findIndex(
+          ({ src, headline }) =>
+            src === currentTrack.src && currentTrack.headline === headline
+        );
+        if (songIndex === -1) return currentTrack;
+        const songDoc =
+          tracksRef.current[
+            songIndex === 0 ? tracksRef.current.length - 1 : songIndex - 1
+          ];
+        return { ...songDoc };
+      }),
+    []
+  );
+  const nextSong = useCallback(
+    () =>
+      updateTrack((currentTrack) => {
+        if (!currentTrack) return currentTrack;
+        const songIndex = tracksRef.current.findIndex(
+          ({ src, headline }) =>
+            src === currentTrack.src && currentTrack.headline === headline
+        );
+        if (songIndex === -1) return currentTrack;
+        const songDoc =
+          tracksRef.current[
+            songIndex === tracksRef.current.length - 1 ? 0 : songIndex + 1
+          ];
+        return { ...songDoc };
+      }),
+    []
+  );
+
+  if (!currentTrack) return;
   return (
-    <div className="w-full h-[75px] absolute bottom-0">
+    <div className="w-full h-[75px] absolute bottom-0 select-none">
       {/* loading slider */}
       <div
         className="w-full  h-1 relative bg-greyShade cursor-pointer"
         onClick={(e) => {
           const clickX =
-            e.clientX -
-            e.currentTarget.parentElement.getBoundingClientRect().left;
-          ref.current.currentTime =
-            (clickX / e.currentTarget.parentElement.clientWidth) * 30;
+            e.clientX - e.currentTarget.getBoundingClientRect().left;
+
+          audioRef.current.currentTime =
+            (clickX / e.currentTarget.clientWidth) *
+            (audioRef.current.duration || 30);
         }}
       >
         <div
-          style={{ width: `${loadingPercent}%` }}
+          style={{
+            width: `${
+              (CurrentTime / (audioRef.current.duration || 30)) * 100
+            }%`,
+          }}
           className="h-1 absolute top-0 left-0 bg-main"
         ></div>
       </div>
       {/* audio player */}
-      <div className="mt-2 w-[90%] items-center mx-auto h-[63px] flex justify-between">
+      <div className="mt-2 w-[95%] items-center mx-auto h-[63px] flex justify-between">
         {/* name of the song */}
-        <div>
-          <span className="text-sm text-greyShade uppercase">PLAYING</span>
-          <p className="text-lg text-white font-bold">{headline}</p>
+        <div className="w-1/4 overflow-x-hidden max-w-[145px]">
+          <span className="text-sm text-greyShade uppercase tracking-widest">
+            PLAYING
+          </span>
+          <p className="text-lg text-white font-bold text-nowrap whitespace-nowrap">
+            {currentTrack.headline}
+          </p>
         </div>
         {/* media playback buttons */}
-        <div className="h-min">
-          {!Paused ? (
-            <svg
-              className="size-10 cursor-pointer"
-              xmlns="http://www.w3.org/2000/svg"
+        <div className="grow flex items-center justify-center gap-2 ">
+          <GrCaretPrevious
+            className="cursor-pointer"
+            onClick={prevSong}
+            size={30}
+            color="white"
+          />
+          {Paused ? (
+            <FaPlayCircle
+              className="cursor-pointer text-3xl md:text-5xl"
+              fill="#bf987c"
               onClick={() => {
-                ref.current.pause();
-                setPaused(true);
+                audioRef.current.play();
               }}
-              viewBox="0 0 320 512"
-            >
-              <path
-                fill="#ffffff"
-                d="M48 64C21.5 64 0 85.5 0 112L0 400c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48L48 64zm192 0c-26.5 0-48 21.5-48 48l0 288c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48l-32 0z"
-              />
-            </svg>
+            />
           ) : (
-            <svg
-              className="size-10 cursor-pointer"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 384 512"
+            <FaPauseCircle
+              className="cursor-pointer text-3xl md:text-5xl"
+              fill="#bf987c"
               onClick={() => {
-                ref.current.play();
-                setPaused(false);
+                audioRef.current.pause();
               }}
-            >
-              <path
-                fill="#ffffff"
-                d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"
-              />
-            </svg>
+            />
           )}
+          <GrCaretNext
+            className="cursor-pointer"
+            onClick={nextSong}
+            size={30}
+            color="white"
+          />
         </div>
         {/* duration */}
         <div>
           <span className="text-white">
-            {Math.floor(((loadingPercent / 100) * 30) / 60)}:
-            {Math.floor((loadingPercent / 100) * 30) < 10
-              ? "0" + Math.floor((loadingPercent / 100) * 30)
-              : Math.floor((loadingPercent / 100) * 30)}
+            {Math.floor(CurrentTime / 60) < 10
+              ? "0" + Math.floor(CurrentTime / 60)
+              : Math.floor(CurrentTime / 60)}
+            :
+            {Math.floor(CurrentTime % 60) < 10
+              ? "0" + Math.floor(CurrentTime % 60)
+              : Math.floor(CurrentTime % 60)}
           </span>{" "}
           <span className="text-greyShade">/</span>{" "}
           <span className="text-greyShade">0:30</span>

@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import ImageSwiper from "./components/Home/ImageSwiper";
-import SoundPlayer from "./components/SoundPlayer/soundPlayer";
+import LatestSingles from "./components/SoundPlayer/LatestSingles";
 import taamaPoster from "@/app/assets/taama/El-Taama-HomePage.jpg";
 import taamaBackground from "@/app/assets/taama/PlayList2024.jpg";
 import LatestNews from "./components/Home/LatestNews";
@@ -18,7 +18,7 @@ export default function Home() {
     <>
       <ImageSwiper />
       <main className="max-w-[1200px] mx-auto">
-        <SoundPlayer poster={taamaPoster} background={taamaBackground} />
+        <LatestSingles poster={taamaPoster} background={taamaBackground} />
         <LatestNews />
         <LatestMusic />
         <hr className="w-full mt-10 mb-12" />
