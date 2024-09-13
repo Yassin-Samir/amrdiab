@@ -5,6 +5,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  useTransition,
 } from "react";
 import { useSongs } from "./SongContext";
 import { Slider } from "@/shadcn-components/ui/slider";
@@ -30,12 +31,13 @@ function MediaPlayer({
 }) {
   const { currentSong, songs, updateCurrentSong, os } = useSongs();
   const [CurrentTime, setCurrentTime] = useState<number>(0);
-  const [Loading, setLoading] = useState(true);
   const [Paused, setPaused] = useState(true);
   const [Volume, setVolume] = useState(1);
   const [Loop, setLoop] = useState(false);
   const audioRef = useRef<HTMLAudioElement>();
   const sliderRef = useRef<HTMLDivElement>(null);
+  const lastVolumeChose = useRef<number>(Volume);
+  const [Loading, startTransition] = useTransition();
   const prevSong = useCallback(
     () =>
       updateCurrentSong((currentSong) => {
@@ -66,6 +68,46 @@ function MediaPlayer({
       }),
     []
   );
+  const startTrack = async () => {
+    try {
+      await audioRef.current.play();
+    } catch (error) {
+      console.log({ PlayError: error });
+      updateCurrentSong((prev) => (prev ? { ...prev } : prev));
+    }
+  };
+  const setMediaSessionMetadata = useCallback(
+    (albumName: string, title: string, poster: string) => {
+      if (!("mediaSession" in window.navigator)) return;
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title,
+        artist: "Amr diab",
+        album: albumName,
+        artwork: [
+          {
+            src: poster,
+            type: "image/jpg",
+            sizes: "600*600",
+          },
+        ],
+      });
+      const audioObj = audioRef.current;
+      navigator.mediaSession.setActionHandler("seekto", (e) => {
+        audioObj.currentTime = e.seekTime;
+      });
+      navigator.mediaSession.setActionHandler("previoustrack", prevSong);
+      navigator.mediaSession.setActionHandler("nexttrack", nextSong);
+      navigator.mediaSession.setActionHandler("stop", () => audioObj.pause());
+      navigator.mediaSession.setActionHandler("play", () => {
+        startTransition(startTrack);
+      });
+      navigator.mediaSession.setActionHandler("pause", (e) => audioObj.pause());
+      navigator.mediaSession.setActionHandler("seekbackward", null);
+      navigator.mediaSession.setActionHandler("seekforward", null);
+    },
+    []
+  );
+
   useLayoutEffect(() => {
     audioRef.current = new Audio();
     audioRef.current.src = "/5-seconds-silence.mp3";
@@ -81,7 +123,6 @@ function MediaPlayer({
     audioRef.current.ontimeupdate = ({ currentTarget }: Event) => {
       const audioElement = currentTarget as HTMLAudioElement;
       setCurrentTime(audioElement.currentTime);
-      setLoading(false);
       if (!("mediaSession" in window.navigator)) return;
       if (!window.navigator.mediaSession.metadata) return;
       const { duration, playbackRate, currentTime: position } = audioElement;
@@ -122,47 +163,10 @@ function MediaPlayer({
     audioObj.src = currentSong.link;
     audioObj.load();
     audioObj.volume = Volume;
-    (async () => {
-      try {
-        setLoading(true);
-        await audioObj.play();
-        setLoading(false);
-        if (!("mediaSession" in window.navigator)) return;
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: currentSong.name,
-          artist: "Amr diab",
-          album: albumName,
-          artwork: [
-            {
-              src: poster,
-              type: "image/jpg",
-              sizes: "600*600",
-            },
-          ],
-        });
-        navigator.mediaSession.setActionHandler("seekto", (e) => {
-          audioObj.currentTime = e.seekTime;
-        });
-        navigator.mediaSession.setActionHandler("previoustrack", prevSong);
-        navigator.mediaSession.setActionHandler("nexttrack", nextSong);
-        navigator.mediaSession.setActionHandler("stop", () => audioObj.pause());
-        navigator.mediaSession.setActionHandler("play", async () => {
-          setLoading(true);
-          await audioObj.play();
-          setLoading(false);
-        });
-        navigator.mediaSession.setActionHandler("pause", (e) =>
-          audioObj.pause()
-        );
-        navigator.mediaSession.setActionHandler("seekbackward", null);
-        navigator.mediaSession.setActionHandler("seekforward", null);
-      } catch (error) {
-        console.log({ InitialPlayError: error });
-      }
-    })();
+    setMediaSessionMetadata(albumName, currentSong.name, poster);
+    startTransition(startTrack);
     return () => {
       setCurrentTime(0);
-      setLoading(true);
       audioObj.pause();
     };
   }, [currentSong]);
@@ -170,6 +174,13 @@ function MediaPlayer({
     if (!audioRef.current) return;
     audioRef.current.volume = Volume;
     audioRef.current.loop = Loop;
+    const timeout = setTimeout(
+      () => (Volume <= 0 ? null : (lastVolumeChose.current = Volume)),
+      500
+    );
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [Volume, Loop]);
   if (!currentSong) return;
   return (
@@ -223,14 +234,7 @@ function MediaPlayer({
                 className="cursor-pointer text-xl md:text-2xl lg:text-3xl"
                 onClick={async () => {
                   if (Loading) return;
-                  setPaused((prev) => !prev);
-                  try {
-                    setLoading(true);
-                    await audioRef.current.play();
-                    setLoading(false);
-                  } catch (error) {
-                    console.log({ PlayError: error });
-                  }
+                  startTransition(startTrack);
                 }}
                 color="white"
                 fill="white"
@@ -296,24 +300,10 @@ function MediaPlayer({
                   e.clientX - e.currentTarget.getBoundingClientRect().left;
                 audioRef.current.currentTime =
                   (clickX / e.currentTarget.clientWidth) * currentSong.duration;
-                if (
-                  audioRef.current.readyState >=
-                  HTMLMediaElement.HAVE_FUTURE_DATA
-                )
-                  return;
-                if (
-                  (clickX / e.currentTarget.clientWidth) *
-                    currentSong.duration <=
-                  0
-                )
-                  return;
-                setLoading(true);
               }}
             >
               {Loading ? (
-                <div className="w-1/4 absolute top-0 bg-blue-600  h-full animate-loading">
-                  {" "}
-                </div>
+                <div className="w-1/4 absolute top-0 bg-blue-600  h-full animate-loading"></div>
               ) : (
                 <div
                   className="absolute inset-0 bg-blue-600 w-0"
@@ -342,7 +332,13 @@ function MediaPlayer({
       <div className="w-1/5 max-w-[150px] flex gap-2 md:gap-4 items-center justify-end ">
         {os.name.match(/IOS|MAC/gi) ? null : (
           <>
-            <RxSpeakerLoud size={20} />
+            <RxSpeakerLoud
+              size={20}
+              className="cursor-pointer"
+              onClick={() =>
+                setVolume((prev) => (prev ? 0 : lastVolumeChose.current))
+              }
+            />
             <Slider
               max={1}
               min={0}
