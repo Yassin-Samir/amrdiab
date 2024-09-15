@@ -73,7 +73,6 @@ function MediaPlayer({
       await audioRef.current.play();
     } catch (error) {
       console.log({ PlayError: error });
-      updateCurrentSong((prev) => (prev ? { ...prev } : prev));
     }
   };
   const setMediaSessionMetadata = useCallback(
@@ -159,7 +158,6 @@ function MediaPlayer({
     startTransition(startTrack);
     return () => {
       setCurrentTime(0);
-      audioObj.pause();
     };
   }, [currentSong]);
   useEffect(() => {
