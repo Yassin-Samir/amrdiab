@@ -15,6 +15,11 @@ function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>();
   useLayoutEffect(() => {
     audioRef.current = new Audio();
+    return () => {
+      audioRef.current.pause();
+      audioRef.current.src = "";
+      audioRef.current.load();
+    };
   }, []);
   useEffect(() => {
     audioRef.current.ontimeupdate = ({ currentTarget }: Event) => {
