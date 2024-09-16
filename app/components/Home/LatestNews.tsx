@@ -33,20 +33,22 @@ function LatestNews() {
       <h1 className="text-5xl text-start  font-extrabold text-white mb-3">
         Latest News
       </h1>
-      <p className="text-base text-greyShade">
-        Find the latest news of Amr Diab
-      </p>
-      <Link
-        target="_blank"
-        href="/news"
-        className="
+      <div className="flex w-full items-center justify-between mt-4 gap-4 flex-wrap">
+        <p className="text-base text-greyShade">
+          Find the latest news of Amr Diab
+        </p>
+        <Link
+          target="_blank"
+          href="/news"
+          className="
         text-end ml-auto 
         text-main 
         cursor-pointer block"
-      >
-        View all news
-      </Link>
-      <hr className="mt-10" />
+        >
+          View all news
+        </Link>
+      </div>
+      <hr className="mt-6" />
       <div
         className="grid  my-10 mx-auto 
       justify-center min-[1090px]:justify-between 
